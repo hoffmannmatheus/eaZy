@@ -1,0 +1,26 @@
+.build**/
+third/
+gen-cpp/
+*.*~
+*.*#
+*.orig
+*-gen.h
+
+# Eclipse project
+.cproject
+.project
+bin/
+
+# Java binary
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.eari
+
+# VIM temporary files
+*.swp
+
+# MAC OSX Files #
+*.DS_Store
