@@ -1,5 +1,6 @@
 .build**/
 third/
+output/
 gen-cpp/
 *.*~
 *.*#

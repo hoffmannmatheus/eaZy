@@ -19,7 +19,8 @@ git clone git://github.com/raspberrypi/tools.git
 echo ''
 echo 'NOTE! Please add this (adjusting path) to your  ~/.bashrc and apply "source ~/.bashrc"'
 echo 'eg.'
-echo 'PATH=$PATH:$HOME/projects/eaZy/third/rpi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin'
+echo 'PATH=$PATH:$HOME/software/rpi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin'
+echo 'then run "arm-linux-gnueabihf-gcc -v" to test installation.'
 
 # done
 popd > /dev/null
