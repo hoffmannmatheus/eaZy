@@ -8,6 +8,6 @@ app=$1
 
 pushd . > /dev/null
 cd ../
-arm-linux-gnueabihf-g++ dev/apps/$app/*.cpp -o output/$app.o
+arm-linux-gnueabihf-g++ apps/$app/*.cpp -o output/$app.o
 popd > /dev/null
 
