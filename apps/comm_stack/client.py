@@ -21,13 +21,12 @@ except:
 
 print 'yay.'
 
-# Process 5 updates
-for update_nbr in range (5000):
-    time.sleep(0.01)
+
+for n in range (50):
+    time.sleep(0.25)
     pair_socket = context.socket(zmq.PAIR)
-    is_bound = False
     pair_socket.connect("tcp://localhost:%s" % "5555")
-    pair_socket.send("test111")
+    pair_socket.send("test"+sys.argv[1])
     pair_socket.close()
 
 # todo:
