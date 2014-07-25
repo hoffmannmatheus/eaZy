@@ -1,0 +1,19 @@
+{
+    'device_controller' : [
+        'driver_ready'       : 0x001,
+        'driver_fail'        : 0x002,
+        'device_added'       : 0x003,
+        'device_removed'     : 0x004,
+        'device_cap_changed' : 0x005,
+    ],
+    'home_stack' : [
+        'get' : [
+            'number_of_devices' : 0x201,
+            'device_list'       : 0x202,
+            'device_state'      : 0x203
+        ],
+        'set' : [
+            'device_state' : 0x301
+        ]
+    ]
+}
