@@ -1,11 +1,11 @@
 
 local bus_server = require('lib.bus.server')
 
--- make initial setup
--- - check configs stuff and so on
-
-local comm    = bus_server:new(--[[config]])
+local comm    = bus_server:new()
 local running = true
+local log = function(...) print('<:> Comm Stack <:>', ...) end
+
+comm:setup()
 
 local parseFilter = function(msg)
     local filter, data
@@ -14,16 +14,18 @@ local parseFilter = function(msg)
 end
 
 local treat_msg = function(msg)
-    local filter, data = parseFilter(msg)
-    comm.distribute(filter, data)
+    if msg.type == 'response' then
+        comm:sendResponse(msg)
+    else
+        comm:distribute(msg)
+    end
 end
 
 local life_loop = function()
-    local msg
-    msg = comm.check_income()
+    treat_msg(comm:getMessage())
 end
 
-print('Running Comm Stack...')
+log('Running ...')
 while running do life_loop() end
-print('Stopping Comm Stack.')
+log('Stopped.')
 
