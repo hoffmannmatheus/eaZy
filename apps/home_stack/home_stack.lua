@@ -1,23 +1,23 @@
 
 local bus_client = require('lib.bus.client')
+local bus_server = require('lib.bus.server')
 
 local comm = bus_client:new({
     id='home_stack',
-    filter='test_stack'
+    filter='device_controller'
 })
-local ui = bus_client:new({
+local ui = bus_server:new({
     id='home_stack',
-    filter='ui_stack',
-    sub_port=5560,
-    send_port=5561,
-    get_port=5562
+    com_port=5560,
+    set_port=5561,
+    res_port=5562
 })
 
 local running = true
 local log = function(...) print('<:> Home Stack <:>', ...) end
 
-comm:setup();
-ui:setup();
+comm:setup()
+ui:setup()
 
 local treat_comm_msg = function(msg)
     log('Message: from,type,data', msg.from, msg.type, msg.data)
@@ -28,15 +28,15 @@ local treat_comm_msg = function(msg)
 end
 
 local treat_ui_msg = function(msg)
-    log('testing get');
-    local response = comm:get('deviceList')
+    log('UI Message: ', msg.from, msg.type, msg.data)
+    ui:distribute({from='ui_server', type=msg.type, data=msg.data})
 end
 
 local life_loop = function()
     local msg
     msg = comm:check_income()
     if msg then treat_comm_msg(msg); msg = nil end
-    msg = ui:check_income()
+    msg = ui:getMessage('noblock')
     if msg then treat_ui_msg(msg) end
 end
 

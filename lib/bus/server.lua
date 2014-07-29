@@ -49,6 +49,7 @@ end
 
 function bus_server:getMessage(noblocking)
     local msg = self.set_socket:recv(noblocking and zmq.NOBLOCK)
+    if not msg then return nil end
     return json.decode(msg)
 end
 
