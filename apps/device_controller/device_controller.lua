@@ -3,21 +3,21 @@ local bus_client = require('lib.bus.client')
 local bus_server = require('lib.bus.server')
 
 local comm = bus_client:new({
-    id='home_stack',
-    filter='device_controller'
+    id='device_controller',
+    filter='home_stack'
 })
-local ui = bus_server:new({
-    id='home_stack',
-    com_port=5560,
-    set_port=5561,
-    res_port=5562
+local device_interface = bus_server:new({
+    id='device_controller',
+    com_port=5564,
+    set_port=5565,
+    res_port=5566
 })
 
 local running = true
-local log = function(...) print('<:> Home Stack <:>', ...) end
+local log = function(...) print('<:> Device Controller <:>', ...) end
 
 comm:setup()
-ui:setup()
+device_interface:setup()
 
 local treat_comm_msg = function(msg)
     log('Message: from,type,data', msg.from, msg.type, msg.data)
@@ -27,17 +27,17 @@ local treat_comm_msg = function(msg)
     end
 end
 
-local treat_ui_msg = function(msg)
-    log('UI Message: ', msg.from, msg.type, msg.data)
-    ui:distribute({from='home_stack', type=msg.type, data=msg.data})
+local treat_device_interface_msg = function(msg)
+    log('Device Interface Message: ', msg.from, msg.type, msg.data)
+    ui:distribute({from='device_controller', type=msg.type, data=msg.data})
 end
 
 local life_loop = function()
     local msg
     msg = comm:check_income()
     if msg then treat_comm_msg(msg); msg = nil end
-    msg = ui:getMessage('noblock')
-    if msg then treat_ui_msg(msg) end
+    msg = device_interface:getMessage('noblock')
+    if msg then treat_device_interface_msg(msg) end
 end
 
 log('Running ...')
