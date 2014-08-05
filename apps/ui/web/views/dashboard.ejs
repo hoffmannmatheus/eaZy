@@ -1,29 +1,66 @@
 
 <link type="text/css" href='http://sailsjs.org/styles/fonts.css' rel='stylesheet'/>
 <body ng-controller='DashboardController' ng-init='init()'>
-    <a href='/device'>
-        <div class='dashboard_box'>
-            <img src='images/appliance.png' />
-            <p>Devices</p>
+
+    <div class='row'>
+        <!-- MAIN DASHBOARD -->
+        <div class="col-xs-12 col-md-8">
+
+            <div class='row'>
+                <!-- DEVICES -->
+                <div class="col-xs-6 col-md-6">
+                    <a class='dashboard_box' href='/device'>
+                        <img src='images/appliance.png' />
+                        <p>Devices</p>
+                    </a>
+                </div>
+                <!-- ENERGY -->
+                <div class="col-xs-6 col-md-6">
+                    <a class='dashboard_box' href='/update'>
+                        <img src='images/bolt.png' />
+                        <p>Energy</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class='row'>
+                <!-- SCENES -->
+                <div class="col-xs-6 col-md-6">
+                    <a class='dashboard_box' href='/scene'>
+                        <img src='images/scene.png' />
+                        <p>Scenarios</p>
+                    </a>
+                </div>
+                <!-- SETTINGS -->
+                <div class="col-xs-6 col-md-6">
+                    <a class='dashboard_box' href='/settings'>
+                        <img src='images/settings.png' />
+                        <p>Settings</p>
+                    </a>
+                </div>
+            </div>
+
         </div>
-    </a>
-    <a href='/update'>
-        <div class='dashboard_box'>
-            <img src='images/update.png' />
-            <p>Updates</p>
+        <!-- END MAIN DASHBOARD -->
+
+        <!-- SIDE DASHBOARD -->
+        <div class="col-xs-12 col-md-4">
+            <a class='dashboard_box info'>
+
+                <p>Temperature:</p>
+                <p class='value'>23.5 C</p>
+
+                <div class='sep'></div>
+
+                <p>Current Energy Consumption:</p>
+                <p class='value'>42.6w</p>
+
+                <div class='sep'></div>
+
+                <p># of Appliances on:</p>
+                <p class='value'>6</p>
+            </a>
         </div>
-    </a>
-    <div class='clear'></div>
-    <a href='/scene'>
-        <div class='dashboard_box'>
-            <img src='images/scene.png' />
-            <p>Scenarios</p>
-        </div>
-    </a>
-    <a href='/settings'>
-        <div class='dashboard_box'>
-            <img src='images/settings.png' />
-            <p>Settings</p>
-        </div>
-    </a>
+        <!-- END SIDE DASHBOARD -->
+    </div>
 </body>
