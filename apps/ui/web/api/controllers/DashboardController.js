@@ -1,14 +1,14 @@
 /**
- * UpdateController
+ * DashboardController
  *
- * @description :: Server-side logic for managing updates
+ * @description :: Server-side logic for managing dashboard
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
 module.exports = {
 	
   go: function (req, res) {
-    res.view("update", {page: 'Update'});
+    res.view("dashboard", {page: 'Dashboard'});
   }
 };
 
