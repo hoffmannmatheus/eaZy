@@ -5,24 +5,50 @@
 
 
     <!-- EACH DEVICE -->
-    <a href='#' class='device_box'>
+    <a ng-repeat="device in devices | orderBy:type" href='#' ng-click='changestate(device)' class='device_box'>
         <div class='row'>
             <div class="col-xs-5 col-md-3">
-                <div class='icon'>
-                    <img src='images/appliance.png'/>
+                <div class="icon {{device.state!='on' && 'inactive'}}">
+                    <img ng-if="device.type == 'appliance'"
+                            src='images/appliance.png'/>
+                    <img ng-if="device.type == 'light'"
+                            src='images/light.png'/>
+                    <img ng-if="device.type == 'thermometer'"
+                            src='images/thermometer.png'/>
+                    <img ng-if="device.type == 'presencesensor'"
+                            src='images/presencesensor.png'/>
                 </div>
             </div>
             <div class="col-xs-7 col-md-9">
                 <div class='row'>
-                    <div class='device_content'>
+                    <!-- APPLIANCE || LIGHT-->
+                    <div ng-if="device.type=='light' || device.type=='appliance'" class='device_content'>
                         <div class="col-xs-12 col-md-6">
-                            <p class='device_name'>Room Appliance</p>
+                            <p class='device_name'>{{device.name}}</p>
                         </div>
                         <div class="col-xs-4 col-md-2">
-                            <p class='device_state'>ON</p>
+                            <p class='device_state'>{{device.state}}</p>
                         </div>
                         <div class="col-xs-8 col-md-4">
-                            <p class='device_info'>12.5 w</p>
+                            <p class='device_info'>{{device.consumption_current}}w</p>
+                        </div>
+                    </div>
+                    <!-- THERMOMETER -->
+                    <div ng-if="device.type == 'thermometer'" class='device_content'>
+                        <div class="col-xs-12 col-md-6">
+                            <p class='device_name'>{{device.name}}</p>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <p class='device_info'>{{device.value}}°C</p>
+                        </div>
+                    </div>
+                    <!-- PRESENCESENSOR -->
+                    <div ng-if="device.type == 'presencesensor'" class='device_content'>
+                        <div class="col-xs-12 col-md-6">
+                            <p class='device_name'>{{device.name}}</p>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <p class='device_info'>{{device.state=='on' && 'Detected' || 'Not detected'}}</p>
                         </div>
                     </div>
                 </div>
@@ -30,32 +56,5 @@
         </div>
     </a>
     <!-- END EACH DEVICE-->
-
-    <!-- ERASE ME-->
-    <a class='device_box'>
-        <div class='row'>
-            <div class="col-xs-5 col-md-3">
-                <div class='icon'>
-                    <img class='unactive' src='images/appliance.png'/>
-                </div>
-            </div>
-            <div class="col-xs-7 col-md-9">
-                <div class='row'>
-                    <div class='device_content'>
-                    <div class="col-xs-12 col-md-6">
-                        <p class='device_name'>Kitchen Appliance</p>
-                    </div>
-                    <div class="col-xs-4 col-md-2">
-                        <p class='device_state'>OFF</p>
-                    </div>
-                    <div class="col-xs-8 col-md-4">
-                        <p class='device_info'>0.5 w</p>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-    <!-- END ERASE ME-->
 
 </body>

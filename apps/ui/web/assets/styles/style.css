@@ -255,6 +255,7 @@ a.dashboard_box p {
 a.dashboard_box.info{
     width:100%;
     background: #fff;
+    border: 2px solid rgba(76,178,192, 0.5);
 }
 
 a.dashboard_box.info:hover {
@@ -280,7 +281,7 @@ a.dashboard_box.info p.value {
 }
 
 div.sep {
-    border: 1px solid rgba(76,178,192, 0.2);
+    border: 1px solid rgba(76,178,192, 0.4);
     width: 90%;
     height: 2px;
     margin: 5% auto 5% auto;
@@ -314,8 +315,8 @@ div.icon img{
     margin: auto;
 }
 
-div.icon img.unactive{
-    opacity: 0.25;
+div.icon.inactive{
+    opacity: 0.30;
 }
 
 div.device_content {
