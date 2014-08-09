@@ -11,8 +11,11 @@ module.exports = {
   },
 
   find: function(req, res) {
-    BusService.listDevices(function(err, devices) {
+    BusService.getData('devicelist', function(err, raw_devices) {
       if(err) return res.json({err:"Could not list devices."});
+      var devices = [];
+      try{devices = JSON.parse(raw_devices);}
+      catch(e) {console.log('Parse device list error:',e);}
       res.json({devices:devices});
     });
   },
@@ -27,10 +30,8 @@ module.exports = {
     if(['on','off'].indexOf(state) == -1)
         return res.json({err:'Invalid state provided'});
 
-    BusService.setDeviceState(id, state, function(err) {
-      if(err) return res.json({err:"Could not set device state."});
-      res.json({status:'ok'});
-    });
+    BusService.sendMessage({action:'setstate',id:id,state:state});
+    res.json({status:'ok'});
   }
 };
 

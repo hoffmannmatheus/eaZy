@@ -7,22 +7,13 @@ local log = function(...) print('<:> Comm Stack <:>', ...) end
 
 comm:setup()
 
-local parseFilter = function(msg)
-    local filter, data
-    -- filter!
-    return filter, data
-end
-
-local treat_msg = function(msg)
+local life_loop = function()
+    local msg = comm:getMessage()
     if msg.type == 'response' then
         comm:sendResponse(msg)
     else
         comm:distribute(msg)
     end
-end
-
-local life_loop = function()
-    treat_msg(comm:getMessage())
 end
 
 log('Running ...')

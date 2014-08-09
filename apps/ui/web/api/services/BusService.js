@@ -1,69 +1,49 @@
 
-var mock_list = [
-  {
-      id:12345,
-      registration:'registered',
-      type:'appliance',
-      name:'My Cute Appliace',
-      state: 'on',
-      consumption_current:4.2,
-      consumption_accumulated:23.1
-  },
-  {
-      id:1245,
-      registration:'registered',
-      type:'appliance',
-      name:'A Dishwasher',
-      state: 'off',
-      consumption_current:0.2,
-      consumption_accumulated:23.1
-  },
-  {
-      id:32145,
-      registration:'registered',
-      type:'presencesensor',
-      name:'Corridor Sensor',
-      state: 'off',
-  },
-  {
-      id:345,
-      registration:'registered',
-      type:'light',
-      name:'Room Light',
-      state: 'on',
-      consumption_current:2.1,
-      consumption_accumulated:19.4
-  },
-  {
-      id:3265,
-      registration:'registered',
-      type:'thermometer',
-      name:'Kitchen Temp',
-      state: 'on',
-      value: 23.6
-  }
-];
-
 var zmq = require('zmq');
-var socket = zmq.socket('sub');
+
+var HOST     = '127.0.0.1';
+var COM_PORT = 5560;
+var SET_PORT = 5561;
+var RES_PORT = 5562;
+
+var com_socket;
 
 module.exports = {
 
-  init: function() {
-    socket.connect('tcp://localhost:5560');
-    socket.subscribe('home_stack');
-    socket.on('message', function(data){
-      console.log('From socket:', data.toString());
+  setup: function() {
+    com_socket = zmq.socket('sub');
+    com_socket.connect('tcp://'+HOST+':'+COM_PORT);
+    com_socket.subscribe('home_stack');
+    com_socket.on('message', BusService.onMessage);
+  },
+
+  onMessage: function(msg) {
+    var msg = msg.toString();
+    try { 
+      var from = msg.split(' ',1)[0];
+      var data = JSON.parse(msg.substr(msg.indexOf(' ')+1));
+      console.log(data);
+    } catch(e) {
+      console.log("Wrong message format. Msg:",msg,"Error:",e);
+    }
+  },
+
+  sendMessage: function(data, type) {
+    var msg = {type:type||'send', data:data||'', from:'web'};
+    var set_socket = zmq.socket('pair');
+    set_socket.connect('tcp://'+HOST+':'+SET_PORT);
+    console.log('sending', JSON.stringify(msg));
+    set_socket.send(JSON.stringify(msg));
+    set_socket.close();
+  },
+
+  getData: function(data, cb) {
+    this.sendMessage(data, 'get');
+    var res_socket =  zmq.socket('pair');
+    res_socket.bind('tcp://'+HOST+':'+RES_PORT);
+    res_socket.on('message', function(response) {
+      cb(null, JSON.parse(response.toString()));
+      res_socket.close();
     });
-  },
-
-  listDevices: function(cb) {
-    // TODO access bus api
-    cb(null, mock_list);
-  },
-
-  setDeviceState: function(id, state, cb) {
-    // TODO send to bus api
-    cb(null, cb());
   }
 };
