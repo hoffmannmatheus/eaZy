@@ -40,7 +40,7 @@ end
 function bus_client:check_income(blocking)
     local raw_data = self.sub_socket:recv(blocking and nil or zmq.NOBLOCK)
     if not raw_data then return nil end
-    local from, msg = unpack(util.split(raw_data, ' '))
+    local from, msg = unpack(util.split(raw_data, ' ',true))
     return json.decode(msg), from
 end
 
