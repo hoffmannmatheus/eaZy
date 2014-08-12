@@ -1,13 +1,12 @@
 var express = require('express');
 var router  = express.Router();
-var bus     = require('../services/BusService');
 
 router.get('/', function(req, res) {
   res.render("device", {page: 'Devices'});
 });
 
 router.get('/find', function(req, res) {
-  bus.getData('devicelist', function(err, raw_devices) {
+  zbus.getData('devicelist', function(err, raw_devices) {
     if(err) return res.json({err:"Could not list devices."});
     var devices = [];
     try{devices = JSON.parse(raw_devices);}
@@ -26,7 +25,7 @@ router.post('/setstate', function(req, res) {
   if(['on','off'].indexOf(state) == -1)
       return res.json({err:'Invalid state provided'});
 
-  bus.sendMessage({action:'setstate',id:id,state:state});
+  zbus.sendMessage({action:'setstate',id:id,state:state});
   res.json({status:'ok'});
 });
 

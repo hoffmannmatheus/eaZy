@@ -10,22 +10,11 @@ var com_socket;
 
 module.exports = {
 
-  setup: function() {
+  setup: function(onMessage) {
     com_socket = zmq.socket('sub');
     com_socket.connect('tcp://'+HOST+':'+COM_PORT);
     com_socket.subscribe('home_stack');
-    com_socket.on('message', BusService.onMessage);
-  },
-
-  onMessage: function(msg) {
-    var msg = msg.toString();
-    try { 
-      var from = msg.split(' ',1)[0];
-      var data = JSON.parse(msg.substr(msg.indexOf(' ')+1));
-      console.log(data);
-    } catch(e) {
-      console.log("Wrong message format. Msg:",msg,"Error:",e);
-    }
+    com_socket.on('message', onMessage);
   },
 
   sendMessage: function(data, type) {
