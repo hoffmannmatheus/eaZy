@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="eazy_web">
+    <head>
+        <title>eaZy</title>
+
+        <!-- Viewport mobile tag for sensible mobile support -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <!--STYLES-->
+        <link rel="stylesheet" href="/styles/bootstrap/bootstrap-theme.css">
+        <link rel="stylesheet" href="/styles/bootstrap/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="/styles/bootstrap/bootstrap.css">
+        <link rel="stylesheet" href="/styles/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="/styles/style.css">
+        <!--STYLES END-->
+
+    </head>
+
+    <body>
+
+        <% include partials/header.ejs %>
+        <div class="main container clearfix">
+            <h1 class='breadcrumbs'>
+            <div class="content">
+                <h1>error :'(</h1>
+                <p><%= message %></p>
+                <p><%= error.status %></p>
+                <pre><%= error.stack %></pre>
+            </div>
+        </div>
+
+        <script src="/js/bootstrap/bootstrap.min.js"></script>
+    </body>
+</html>

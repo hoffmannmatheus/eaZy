@@ -1,0 +1,67 @@
+<% layout('layout') -%>
+
+<link type="text/css" href='http://sailsjs.org/styles/fonts.css' rel='stylesheet'/>
+<body ng-controller='DashboardController' ng-init='init()'>
+
+    <div class='row'>
+        <!-- MAIN DASHBOARD -->
+        <div class="col-xs-12 col-md-8">
+
+            <div class='row'>
+                <!-- DEVICES -->
+                <div class="col-xs-6 col-md-6">
+                    <a class='dashboard_box' href='/device'>
+                        <img src='images/appliance.png' />
+                        <p>Devices</p>
+                    </a>
+                </div>
+                <!-- ENERGY -->
+                <div class="col-xs-6 col-md-6">
+                    <a class='dashboard_box' href='/update'>
+                        <img src='images/bolt.png' />
+                        <p>Energy</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class='row'>
+                <!-- SCENES -->
+                <div class="col-xs-6 col-md-6">
+                    <a class='dashboard_box' href='/scene'>
+                        <img src='images/scene.png' />
+                        <p>Scenarios</p>
+                    </a>
+                </div>
+                <!-- SETTINGS -->
+                <div class="col-xs-6 col-md-6">
+                    <a class='dashboard_box' href='/settings'>
+                        <img src='images/settings.png' />
+                        <p>Settings</p>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <!-- END MAIN DASHBOARD -->
+
+        <!-- SIDE DASHBOARD -->
+        <div class="col-xs-12 col-md-4">
+            <a class='dashboard_box info'>
+
+                <p>Temperature:</p>
+                <p class='value'>{{avg_temp}}°C</p>
+
+                <div class='sep'></div>
+
+                <p>Current Energy Consumption:</p>
+                <p class='value'>{{consumption}}w</p>
+
+                <div class='sep'></div>
+
+                <p># of Appliances on:</p>
+                <p class='value'>{{on_appliances}}</p>
+            </a>
+        </div>
+        <!-- END SIDE DASHBOARD -->
+    </div>
+</body>

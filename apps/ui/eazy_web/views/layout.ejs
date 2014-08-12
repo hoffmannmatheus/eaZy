@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="eazy_web">
+    <head>
+        <title>eaZy</title>
+
+        <!-- Viewport mobile tag for sensible mobile support -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <!--STYLES-->
+        <link rel="stylesheet" href="/styles/bootstrap/bootstrap-theme.css">
+        <link rel="stylesheet" href="/styles/bootstrap/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="/styles/bootstrap/bootstrap.css">
+        <link rel="stylesheet" href="/styles/bootstrap/bootstrap.min.css">
+        <link rel="stylesheet" href="/styles/style.css">
+        <!--STYLES END-->
+
+        <script src="/js/angular/angular.min.js"></script>
+        <script src="/js/angular/angular-animate.min.js"></script>
+        <script src="/js/angular/angular-cookies.min.js"></script>
+        <script src="/js/angular/angular-file-upload-shim.min.js"></script>
+        <script src="/js/angular/angular-file-upload.min.js"></script>
+        <script src="/js/angular/angular-loader.min.js"></script>
+        <script src="/js/angular/angular-messages.min.js"></script>
+        <script src="/js/angular/angular-mocks.js"></script>
+        <script src="/js/angular/angular-resource.min.js"></script>
+        <script src="/js/angular/angular-route.min.js"></script>
+        <script src="/js/angular/angular-sanitize.min.js"></script>
+        <script src="/js/angular/angular-scenario.js"></script>
+        <script src="/js/angular/angular-touch.min.js"></script>
+        <script src="/js/angular/angular.min.cookies.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/angular/app.js"></script>
+        <script src="/js/angular/socket_service.js"></script>
+        <script src="/js/angular/controller/DashboardController.js"></script>
+        <script src="/js/angular/controller/DeviceController.js"></script>
+    </head>
+
+    <body>
+
+        <% include partials/header.ejs %>
+        <div class="main container clearfix">
+            <h1 class='breadcrumbs'><a class='breadcrumbs' href='/'>Home</a> > <%= page%></h1>
+            <div class="content">
+                <%- body %>
+            </div>
+        </div>
+
+        <script src="/js/bootstrap/bootstrap.min.js"></script>
+    </body>
+</html>
