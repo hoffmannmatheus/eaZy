@@ -1,4 +1,4 @@
-angular.module('eazy_web').controller('DeviceController', function($scope, $http, socket){
+app.controller('DeviceController', function($scope, $http, socket){
   $scope.init = function(){
     console.log('hello from device');
     $http.get('/device/find').

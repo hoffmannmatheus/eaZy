@@ -1,4 +1,4 @@
-angular.module('eazy_web').controller('DashboardController', function($scope, $http, socket){
+app.controller('DashboardController', function($scope, $http, socket){
 
   socket.on('message', function(message) {
     console.log('socket.on message:',message);

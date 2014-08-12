@@ -95,17 +95,9 @@ body {
 
 .top-bar .container a li:hover {
     color: #118798;
-    -webkit-transition: color 200ms;
-    -moz-transition: color 200ms;
-    -o-transition: color 200ms;
-    transition: color 200ms;
 }
 
 div.header {
-    -webkit-transition: 6s;
-    -moz-transition: 6s;
-    -o-transition: 6s;
-    transition: 6s;
     background: rgba(4, 36, 41, 0.89);
     padding: 30px 0 10px;
 }

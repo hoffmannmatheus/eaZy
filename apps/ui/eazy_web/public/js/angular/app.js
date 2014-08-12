@@ -1,3 +1,3 @@
 
-var app = angular.module('eazy_web',['ngCookies']);
+app = angular.module('eazy_web', ['chieffancypants.loadingBar', 'ngTouch', 'ngCookies', 'ngAnimate']);
  
