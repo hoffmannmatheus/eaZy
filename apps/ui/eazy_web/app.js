@@ -12,34 +12,18 @@ var server = require('http').Server(app);
 
 // Bus and Socket.IO setup
 
-var conns = [];
 var io = require('socket.io')(server);
-io.sockets.on('connection', function(socket){
-    conns.push(socket);
-    socket.on('disconnect', function() {
-        if(conns.length == 1) return conns = [];
-        conns = _.remove(conns, function(c) {
-            return c.id == socket.id;
-        });
-    });
-});
-
 var onMessage = function(msg) {
     var msg = msg.toString();
     try { 
         var from = msg.split(' ',1)[0];
         var data = JSON.parse(msg.substr(msg.indexOf(' ')+1));
         console.log(data);
-        console.log(conns.length);
-        if(conns && conns.length > 0) {
-            console.log('sending...');
-            conns.forEach(function(s){s.emit('message', data);});
-        }
+        io.sockets.emit('message',data);
     } catch(e) {
         console.log("Wrong message format. Msg:",msg,"Error:",e);
     }
 }
-
 zbus = require('./services/BusService.js');
 zbus.setup(onMessage);
 
