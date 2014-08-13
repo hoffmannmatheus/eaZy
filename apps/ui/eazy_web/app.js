@@ -13,21 +13,10 @@ var server = require('http').Server(app);
 // Bus and Socket.IO setup
 
 var io = require('socket.io')(server);
-var onMessage = function(msg) {
-    var msg = msg.toString();
-    try { 
-        var from = msg.split(' ',1)[0];
-        var data = JSON.parse(msg.substr(msg.indexOf(' ')+1));
-        console.log(data);
-        io.sockets.emit('message',data);
-    } catch(e) {
-        console.log("Wrong message format. Msg:",msg,"Error:",e);
-    }
-}
 zbus = require('./services/BusService.js');
-zbus.setup(onMessage);
+zbus.setup(io);
 
-// view engine setup
+// View engine setup
 
 app.set('views', path.join(__dirname, 'views'));
 app.engine('ejs', engine);

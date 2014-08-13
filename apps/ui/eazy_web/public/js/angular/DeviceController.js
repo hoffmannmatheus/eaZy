@@ -1,19 +1,48 @@
 app.controller('DeviceController', function($scope, $http, socket){
+  socket.on('message', function(message) {
+    console.log('socket.on message:',message);
+  });
+  socket.on('setstate', function(data) {
+    console.log('socket.on update:',data);
+    $scope.devices.forEach(function(d) {
+      if(d.id == data.id) d.state = data.state;
+    });
+  });
+  socket.on('setvalue', function(data) {
+    console.log('socket.on update:',data);
+    $scope.devices.forEach(function(d) {
+      if(d.id == data.id) d.value = data.value;
+    });
+  });
+  socket.on('setconsumption_current', function(data) {
+    console.log('socket.on update:',data);
+    $scope.devices.forEach(function(d) {
+      if(d.id == data.id)
+        d.consumption_current = Math.round(data.consumption_current*100)/100;
+    });
+  });
+  socket.on('setconsumption_accumulated', function(data) {
+    console.log('socket.on update:',data);
+    $scope.devices.forEach(function(d) {
+      if(d.id == data.id)
+        d.consumption_accumulated = Math.round(data.consumption_accumulated*100)/100;
+    });
+  });
+
   $scope.init = function(){
     console.log('hello from device');
     $http.get('/device/find').
     success(function(data, status, headers, config) {
       console.log(data);
       if(!data.devices) return console.log('oh, no devices found!');
-      $scope.devices = [];
-      data.devices.forEach(function(d) {
+      $scope.devices = data.devices;
+      $scope.devices.forEach(function(d) {
         if(d.consumption_current)
           d.consumption_current = Math.round(d.consumption_current*100)/100;
         if(d.consumption_current)
           d.consumption_accumulated = Math.round(d.consumption_accumulated*100)/100;
         if(d.type == 'thermometer')
           d.value = Math.round(d.value*100)/100;
-        $scope.devices.push(d);
       });
     }).
     error(function(data, status, headers, config) {

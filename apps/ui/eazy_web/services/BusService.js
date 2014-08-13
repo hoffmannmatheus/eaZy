@@ -10,11 +10,27 @@ var com_socket;
 
 module.exports = {
 
-  setup: function(onMessage) {
+  setup: function(io) {
     com_socket = zmq.socket('sub');
     com_socket.connect('tcp://'+HOST+':'+COM_PORT);
     com_socket.subscribe('home_stack');
-    com_socket.on('message', onMessage);
+    com_socket.on('message', function(msg) {
+      var msg = msg.toString();
+      try { 
+          var from = msg.split(' ',1)[0];
+          var evt  = JSON.parse(msg.substr(msg.indexOf(' ')+1));
+          console.log(evt);
+
+          if(typeof evt.data == 'object') {
+             console.log
+            io.sockets.emit(evt.data.action, evt.data);
+          } else {
+            console.log('dunno what to do.');
+          }
+      } catch(e) {
+          console.log("Wrong message format. Msg:",msg,"Error:",e);
+      }
+    });
   },
 
   sendMessage: function(data, type) {
