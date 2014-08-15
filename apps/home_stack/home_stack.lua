@@ -1,53 +1,21 @@
 
-local mock_list = {
-    {
-    id=12345,
-    registration="registered",
-    type="appliance",
-    name="My Cute Appliace",
-    state= "on",
-    consumption_current=4.2,
-    consumption_accumulated=23.1
-    },
-    {
-    id=1245,
-    registration="registered",
-    type="appliance",
-    name="A Dishwasher",
-    state= "off",
-    consumption_current=0.2,
-    consumption_accumulated=23.1
-    },
-    {
-    id=32145,
-    registration="registered",
-    type="presencesensor",
-    name="Corridor Sensor",
-    state= "off"
-    },
-    {
-    id=345,
-    registration="registered",
-    type="light",
-    name="Room Light",
-    state= "on",
-    consumption_current=2.1,
-    consumption_accumulated=19.4
-    },
-    {
-    id=3265,
-    registration="registered",
-    type="thermometer",
-    name="Kitchen Temp",
-    state= "on",
-    value= 23.6
-    }
-}
+--------------------------------------------------------------------------------
+-- Home Stack
+--
+-- Module responsible for interfacing User Interface and Device Controller.
+--
+-- The objective of Home Stack is to provide a seamless interface to where any
+-- UI implementation can access to get user information.
+-- Any user preferences, device names and scenes are stored in here.
+-- Also, all events trigged by scenes are sent to UI from Home Stack.
+--------------------------------------------------------------------------------
 
+local json          = require('json')
+local bus_client    = require('lib.bus.client')
+local bus_server    = require('lib.bus.server')
 
-local json       = require('json')
-local bus_client = require('lib.bus.client')
-local bus_server = require('lib.bus.server')
+local scene_engine  = require('apps.home_stack.scene_engine')
+local device_mapper = require('apps.home_stack.device_mapper')
 
 local comm = bus_client:new({
     id='home_stack',
@@ -78,14 +46,15 @@ end
 
 local treat_ui_msg = function(msg)
     log('UI Message: ', msg.sender, msg.type, msg.data)
-    if msg.type=='get' then
+    if msg.type == 'get' then
         if msg.data == 'devicelist' then
-            ui:sendResponse(json.encode(mock_list));
+            local list = comm:get('devicelist')
+            ui:sendResponse(device_mapper.map(list))
         else
-            ui:sendResponse('So you want '..msg.data..'?');
+            ui:sendResponse('So you want '..msg.data..'?')
         end
-    else
-        --ui:distribute({sender='home_stack', type=msg.type, data=msg.data})
+    elseif msg.type == 'send' then
+        msg.data.id = device_mapper.getRawDeviceId(msg.data.id)
         comm:send(msg.data)
     end
 end

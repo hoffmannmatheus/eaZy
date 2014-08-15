@@ -6,11 +6,8 @@ router.get('/', function(req, res) {
 });
 
 router.get('/find', function(req, res) {
-  zbus.getData('devicelist', function(err, raw_devices) {
+  zbus.getData('devicelist', function(err, devices) {
     if(err) return res.json({err:"Could not list devices."});
-    var devices = [];
-    try{devices = JSON.parse(raw_devices);}
-    catch(e) {console.log('Parse device list error:',e);}
     res.json({devices:devices});
   });
 });
