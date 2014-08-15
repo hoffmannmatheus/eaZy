@@ -67,17 +67,17 @@ comm:setup()
 ui:setup()
 
 local treat_comm_msg = function(msg)
-    log('Message: from,type,data', msg.from, msg.type, msg.data)
+    log('Message: sender,type,data', msg.sender, msg.type, msg.data)
     if msg.type == 'get' then 
         local my_response = 'my response to '..msg.data..' is buga.'
         comm:send(my_response, 'response')
     else
-        ui:distribute({from='home_stack', type=msg.type, data=msg.data})
+        ui:distribute({sender='home_stack', type=msg.type, data=msg.data})
     end
 end
 
 local treat_ui_msg = function(msg)
-    log('UI Message: ', msg.from, msg.type, msg.data)
+    log('UI Message: ', msg.sender, msg.type, msg.data)
     if msg.type=='get' then
         if msg.data == 'devicelist' then
             ui:sendResponse(json.encode(mock_list));
@@ -85,7 +85,8 @@ local treat_ui_msg = function(msg)
             ui:sendResponse('So you want '..msg.data..'?');
         end
     else
-        ui:distribute({from='home_stack', type=msg.type, data=msg.data})
+        --ui:distribute({sender='home_stack', type=msg.type, data=msg.data})
+        comm:send(msg.data)
     end
 end
 

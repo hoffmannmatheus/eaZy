@@ -42,8 +42,8 @@ end
 
 function bus_server:distribute(msg)
     if not msg then return end
-    self.pub_socket:send(msg.from .. ' ' .. json.encode(msg))
-    print('distribute:',msg.from .. ' ' .. json.encode(msg))
+    self.pub_socket:send(msg.sender .. ' ' .. json.encode(msg))
+    print('distribute:',msg.sender .. ' ' .. json.encode(msg))
     return self
 end
 

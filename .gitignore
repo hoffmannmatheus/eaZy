@@ -25,3 +25,6 @@ bin/
 
 # MAC OSX Files #
 *.DS_Store
+
+# OpenZWave logs
+OZW_Log.log

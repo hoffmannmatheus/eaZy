@@ -40,13 +40,13 @@ end
 function bus_client:check_income(blocking)
     local raw_data = self.sub_socket:recv(blocking and nil or zmq.NOBLOCK)
     if not raw_data then return nil end
-    local from, msg = unpack(util.split(raw_data, ' ',true))
-    return json.decode(msg), from
+    local sender, msg = unpack(util.split(raw_data, ' ',true))
+    return json.decode(msg), sender
 end
 
 function bus_client:send(data, type)
     if not data then return end
-    local msg = {type=type or 'send', data=data, from=self.id}
+    local msg = {type=type or 'send', data=data, sender=self.id}
     local set_socket, err = self.context:socket(zmq.PAIR)
     zmq.assert(set_socket, err)
     set_socket:connect('tcp://'..self.host..':'..self.set_port)

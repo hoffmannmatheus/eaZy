@@ -17,7 +17,7 @@ module.exports = {
     com_socket.on('message', function(msg) {
       var msg = msg.toString();
       try { 
-          var from = msg.split(' ',1)[0];
+          var sender = msg.split(' ',1)[0];
           var evt  = JSON.parse(msg.substr(msg.indexOf(' ')+1));
           console.log(evt);
 
@@ -34,7 +34,7 @@ module.exports = {
   },
 
   sendMessage: function(data, type) {
-    var msg = {type:type||'send', data:data||'', from:'web'};
+    var msg = {type:type||'send', data:data||'', sender:'web'};
     var set_socket = zmq.socket('pair');
     set_socket.connect('tcp://'+HOST+':'+SET_PORT);
     console.log('sending', JSON.stringify(msg));
