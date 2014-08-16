@@ -42,34 +42,32 @@ except ImportError:
 
 
 running = True
-
 logging.basicConfig(level=logging.DEBUG)
 
-comm = BusClient('device_controller', 'home_stack')
-comm.setup()
+home_stack = BusClient('device_controller', 'home_stack')
+home_stack.setup()
 
-def treat_comm_msg(msg):
+def onHomeStackMessage(msg):
     logging.info('Message: from,type,data', extra=msg)
     if msg['type'] == 'get':
         if msg['data'] == 'devicelist':
-            logging.info('Sending devicelist')
-            comm.send(mock_list, 'response')
+            # TODO use real devices
+            home_stack.send(mock_list, 'response')
     elif msg['type'] == 'send':
         device_id = msg['data']['id']
         action = msg['data']['action']
         state = msg['data']['state']
         if action == 'setstate':
             print('New state of ' + str(device_id) + ' is ' + state)
-        
 
 
-def life_loop():
-    msg = comm.check_income()
+def lifeLoop():
+    msg = home_stack.check_income()
     if msg:
-        treat_comm_msg(msg[0]);
+        onHomeStackMessage(msg[0]);
 
 logging.info('Running ...')
 while running:
-    life_loop()
+    lifeLoop()
 logging.info('Stopped.')
 
