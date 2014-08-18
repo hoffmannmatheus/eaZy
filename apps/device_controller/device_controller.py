@@ -7,15 +7,8 @@ except ImportError:
 
 from zwave_controller import ZWaveController
 
-
 running = True
 logging.basicConfig(level=logging.DEBUG)
-
-home_stack = BusClient('device_controller', 'home_stack')
-home_stack.setup()
-
-zwave = ZWaveController()
-zwave.setup()
 
 def lifeLoop():
     msg = home_stack.check_income()
@@ -36,6 +29,16 @@ def onHomeStackMessage(msg):
             zwave.setDeviceState(device_id, state)
             print('New state of ' + str(device_id) + ' is ' + state)
 
+def onDeviceUpdate(device):
+    print('will send notifycation!')
+    msg = {'type':'update','data':device,'id':device['id']}
+    home_stack.send(msg, 'send')
+
+home_stack = BusClient('device_controller', 'home_stack')
+home_stack.setup()
+
+zwave = ZWaveController()
+zwave.setup(onDeviceUpdate)
 
 logging.info('Running ...')
 while running:
