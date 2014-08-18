@@ -41,27 +41,35 @@ app.controller('DashboardController', function($scope, $http, socket){
     }).
     error(function(data, status, headers, config) {
       $scope.on_appliances = 0;
-      $scope.avg_temp      = 0;
+      $scope.temperature   = 0;
+      $scope.luminance     = 0;
       $scope.consumption   = 0;
     });
   };
 
   $scope.updateDashboard = function() {
     var on_appliances = 0;
-    var avg_temp      = 0;
+    var temperature   = 0;
     var consumption   = 0;
-
+    var luminance     = 0;
     $scope.devices.forEach(function(d) {
-      if(d.state == 'on' && d.consumption_current) {
+      if(d.state == 'on' && d.type == 'appliance') {
           on_appliances += 1;
           consumption += d.consumption_current;
       }
-      if(d.type == 'thermometer') {
-        avg_temp = d.value;
+      if(d.type == 'sensor') {
+        if(d.temperature) {
+            temperature = ((d.temperature - 32) * 5) / 9; // F to C
+        } else {
+            temperature = 0;
+        }
+
+        luminance   = d.luminance || 0;
       }
     });
     $scope.on_appliances = on_appliances;
-    $scope.avg_temp      = Math.round(avg_temp * 100) / 100;
+    $scope.temperature   = Math.round(temperature * 100) / 100;
+    $scope.luminance     = Math.round(luminance * 100) / 100;
     $scope.consumption   = Math.round(consumption * 100) / 100;
   };
 

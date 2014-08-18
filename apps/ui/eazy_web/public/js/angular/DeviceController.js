@@ -41,8 +41,12 @@ app.controller('DeviceController', function($scope, $http, socket){
           d.consumption_current = Math.round(d.consumption_current*100)/100;
         if(d.consumption_current)
           d.consumption_accumulated = Math.round(d.consumption_accumulated*100)/100;
-        if(d.type == 'thermometer')
-          d.value = Math.round(d.value*100)/100;
+        if(d.temperature) {
+          var temperature = ((d.temperature - 32) * 5) / 9; // F to C
+          d.temperature = Math.round(temperature*100)/100;
+        }
+        if(d.luminance)
+          d.luminance = Math.round(d.luminance*100)/100;
       });
     }).
     error(function(data, status, headers, config) {

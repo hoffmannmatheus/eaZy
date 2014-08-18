@@ -11,15 +11,15 @@
     <a ng-repeat="device in devices | orderBy:type" href='#' ng-click='changestate(device)' class='device_box'>
         <div class='row'>
             <div class="col-xs-5 col-md-3">
-                <div class="icon {{device.state!='on' && 'inactive'}}">
+                <div class="icon {{device.state=='off' && 'inactive'}}">
                     <img ng-if="device.type == 'appliance'"
                             src='images/appliance.png'/>
                     <img ng-if="device.type == 'light'"
                             src='images/light.png'/>
-                    <img ng-if="device.type == 'thermometer'"
+                    <img ng-if="device.type == 'sensor'"
                             src='images/thermometer.png'/>
-                    <img ng-if="device.type == 'presencesensor'"
-                            src='images/presencesensor.png'/>
+                    <!-- <img ng-if="device.type == 'presencesensor'"
+                            src='images/presencesensor.png'/>-->
                 </div>
             </div>
             <div class="col-xs-7 col-md-9">
@@ -37,21 +37,15 @@
                         </div>
                     </div>
                     <!-- THERMOMETER -->
-                    <div ng-if="device.type == 'thermometer'" class='device_content'>
+                    <div ng-if="device.type == 'sensor'" class='device_content'>
                         <div class="col-xs-12 col-md-6">
                             <p class='device_name'>{{device.name}}</p>
                         </div>
-                        <div class="col-xs-12 col-md-6">
-                            <p class='device_info'>{{device.value}}°C</p>
+                        <div class="col-xs-6 col-md-3">
+                            <p class='device_info'>{{device.temperature}}°C</p>
                         </div>
-                    </div>
-                    <!-- PRESENCESENSOR -->
-                    <div ng-if="device.type == 'presencesensor'" class='device_content'>
-                        <div class="col-xs-12 col-md-6">
-                            <p class='device_name'>{{device.name}}</p>
-                        </div>
-                        <div class="col-xs-12 col-md-6">
-                            <p class='device_info'>{{device.state=='on' && 'Detected' || 'Not detected'}}</p>
+                        <div class="col-xs-6 col-md-3">
+                            <p class='device_info'>{{device.luminance}} lm</p>
                         </div>
                     </div>
                 </div>
