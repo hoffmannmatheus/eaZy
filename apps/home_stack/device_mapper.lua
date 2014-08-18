@@ -4,41 +4,38 @@
 --
 -- This module maps User devices to real devices retrieved from Device Controller.
 --------------------------------------------------------------------------------
+--[{'name': 'Smart Energy Switch', 'type': 'appliance',
+--'consumption_accumulated': '0.252000004053', 'state': 'on',
+--'consumption_current': '0.375', 'id': 3}, 
+--{'luminance': None, 'temperature':
+--None, 'presence': 'off', 'type': 'sensor', 'id': 4, 'name': 'EZMotion+ 3-in-1
+--Sensor'}, 
+--{'name': 'Smart Energy Switch', 'type': 'appliance',
+--'consumption_accumulated': '0.0', 'state': 'on', 'consumption_current': '0.0',
+--'id': 5}]
 
 local mock_list = {
     {
-    id=12345,
+    id=1,
     registration="registered",
     name="My Cute Appliace",
     },
     {
-    id=1245,
+    id=2,
     registration="registered",
-    name="A Dishwasher",
+    name="LG Monitor",
     },
     {
-    id=32145,
+    id=3,
     registration="registered",
-    name="Corridor Sensor",
-    },
-    {
-    id=345,
-    registration="registered",
-    name="Room Light",
-    },
-    {
-    id=3266,
-    registration="registered",
-    name="Kitchen Temp",
+    name="Multisensor",
     }
 }
 
 local mock_id_map = {
-   [1] = 12345,
-   [2] = 1245,
-   [3] = 32145,
-   [4] = 345,
-   [5] = 3266
+   [3] = 1,
+   [4] = 3,
+   [5] = 2 
 }
 
 
@@ -53,19 +50,37 @@ local log = function(dev) for k,v in pairs(dev) do print(k,v) end end
 function device_mapper.map(raw_list) 
     local user_list = {}
     local id_map = mock_id_map; -- TODO use real
-    for k, raw_device in pairs(raw_list) do
-        local id = id_map[raw_device.id]
-        local dev = device_mapper.getUserDeviceById(id)
-        if not dev then
-            print("Unknown device:")
-            log(raw_device)
-            raw_device.registration='unregistered'
+    for k, device in pairs(raw_list) do
+        local id = id_map[device.id]
+        -- get the user device
+        local user_prefs = device_mapper.getUserDeviceById(id)
+        if not user_prefs then
+            -- unknown device
+            device.registration='unregistered'
         else
-            for key, value in pairs(dev) do
-                raw_device[key] = value -- fill device with user settings
+            -- add user settings to the object
+            for key, value in pairs(user_prefs) do
+                device[key] = value -- fill device with user settings
             end
         end
-        table.insert(user_list, raw_device)
+        -- fix strings to numeric values
+        if device.consumption_accumulated then
+            device.consumption_accumulated =
+                    tonumber(device.consumption_accumulated)
+        end
+        if device.consumption_current then
+            device.consumption_current =
+                    tonumber(device.consumption_current)
+        end
+        if device.temperature then
+            device.temperature = tonumber(device.temperature)
+        end
+        if device.luminance then
+            device.luminance = tonumber(device.luminance)
+        end
+        print("device:")
+        log(device)
+        table.insert(user_list, device)
     end
     return user_list
 end

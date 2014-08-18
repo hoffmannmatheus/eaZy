@@ -42,7 +42,7 @@ class ZWaveController():
             
             if self.getValueForLabel(node, 'Switch'):
                 dev['type'] = 'appliance'
-                dev['name'] = self.network.nodes[node].product_name
+                dev['product_name'] = self.network.nodes[node].product_name
                 dev['consumption_accumulated'] = self.getValueForLabel(node, 'Energy')
                 dev['consumption_current'] = self.getValueForLabel(node, 'Power')
                 if self.getValueForLabel(node, 'Switch') == 'True':
@@ -52,7 +52,7 @@ class ZWaveController():
 
             if self.getValueForLabel(node, 'Sensor'):
                 dev['type'] = 'sensor'
-                dev['name'] = self.network.nodes[node].product_name
+                dev['product_name'] = self.network.nodes[node].product_name
                 dev['temperature'] = self.getValueForLabel(node, 'Temperature')
                 dev['luminance']   = self.getValueForLabel(node, 'Luminance')
                 if self.getValueForLabel(node, 'Sensor') == 'True':
