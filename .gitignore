@@ -6,6 +6,7 @@ gen-cpp/
 *.*#
 *.orig
 *-gen.h
+*.pyc
 
 # Eclipse project
 .cproject
@@ -27,4 +28,5 @@ bin/
 *.DS_Store
 
 # OpenZWave logs
-OZW_Log.log
+OZW_Log.txt
+
