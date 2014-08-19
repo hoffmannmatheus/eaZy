@@ -48,9 +48,9 @@ local log = function(dev) for k,v in pairs(dev) do print(k,v) end end
 --------------------------------------------------------------------------------
 
 function device_mapper.map(raw_list) 
-    local user_list = {}
+    if not raw_list then return {} end
     local id_map = mock_id_map; -- TODO use real
-    for k, device in pairs(raw_list) do
+    local fixDevice = function(device)
         local id = id_map[device.id]
         -- get the user device
         local user_prefs = device_mapper.getUserDeviceById(id)
@@ -78,11 +78,17 @@ function device_mapper.map(raw_list)
         if device.luminance then
             device.luminance = tonumber(device.luminance)
         end
-        print("device:")
-        log(device)
-        table.insert(user_list, device)
+        return device
     end
-    return user_list
+    if #raw_list == 0 and next(raw_list) then -- single device
+        return fixDevice(raw_list)
+    else -- device list
+        local user_list = {}
+        for k, device in pairs(raw_list) do
+            table.insert(user_list, fixDevice(device))
+        end
+        return user_list
+    end
 end
 
 --------------------------------------------------------------------------------

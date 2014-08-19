@@ -64,6 +64,17 @@ function onDeviceMessage(msg)
         device:sendResponse({
             data='foo'
         })
+    elseif msg.type == 'send' then 
+        evt = msg.data;
+        if evt.type == 'update' then
+            evt.data = device_mapper.map(evt.data)
+            evt.id = evt.data.id
+        end
+        ui:distribute({
+            sender = 'home_stack',
+            type   = msg.type,
+            data   = evt
+        })
     else
         ui:distribute({
             sender = 'home_stack',

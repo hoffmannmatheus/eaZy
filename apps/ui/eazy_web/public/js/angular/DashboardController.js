@@ -2,33 +2,15 @@ app.controller('DashboardController', function($scope, $http, socket){
   socket.on('message', function(message) {
     console.log('socket.on message:',message);
   });
-  socket.on('setstate', function(data) {
-    console.log('socket.on update:',data);
-    $scope.devices.forEach(function(d) {
-      if(d.id == data.id) d.state = data.state;
-    });
+
+  socket.on('update', function(evt) {
+    console.log('socket.on update:', evt);
+    for(var i = 0; i < $scope.devices.length; i++) {
+      if($scope.devices[i].id == evt.id) {
+        $scope.devices[i] = evt.data;
+      }
+    }
     $scope.updateDashboard();
-  });
-  socket.on('setvalue', function(data) {
-    console.log('socket.on update:',data);
-    $scope.devices.forEach(function(d) {
-      if(d.id == data.id) d.value = data.value;
-    });
-    $scope.updateDashboard();
-  });
-  socket.on('setconsumption_current', function(data) {
-    console.log('socket.on update:',data);
-    $scope.devices.forEach(function(d) {
-      if(d.id == data.id)
-        d.consumption_current = Math.round(data.consumption_current*100)/100;
-    });
-  });
-  socket.on('setconsumption_accumulated', function(data) {
-    console.log('socket.on update:',data);
-    $scope.devices.forEach(function(d) {
-      if(d.id == data.id)
-        d.consumption_accumulated = Math.round(data.consumption_accumulated*100)/100;
-    });
   });
 
   $scope.init = function() {

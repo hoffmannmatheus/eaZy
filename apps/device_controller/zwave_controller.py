@@ -19,7 +19,7 @@ class ZWaveController():
         dispatcher.connect(self.onNetworkStart, ZWaveNetwork.SIGNAL_NETWORK_STARTED)
         dispatcher.connect(self.onNetworkFailed, ZWaveNetwork.SIGNAL_NETWORK_FAILED)
 
-        options = ZWaveOption("/dev/ttyUSB1", \
+        options = ZWaveOption("/dev/ttyUSB0", \
           config_path="/home/matheus/software/python-openzwave-0.2.6/openzwave/config", \
           user_path=".", cmd_line="")
         options.set_append_log_file(False)
@@ -44,9 +44,10 @@ class ZWaveController():
     def buildDevice(self, node):
         dev = {}
         dev['id'] = node
+        dev['type'] = 'unknown'
+        dev['product_name'] = self.network.nodes[node].product_name
         if self.getValueForLabel(node, 'Switch'):
             dev['type'] = 'appliance'
-            dev['product_name'] = self.network.nodes[node].product_name
             dev['consumption_accumulated'] = self.getValueForLabel(node, 'Energy')
             dev['consumption_current'] = self.getValueForLabel(node, 'Power')
             if self.getValueForLabel(node, 'Switch') == 'True':
@@ -55,7 +56,6 @@ class ZWaveController():
                 dev['state'] = 'off'
         if self.getValueForLabel(node, 'Sensor'):
             dev['type'] = 'sensor'
-            dev['product_name'] = self.network.nodes[node].product_name
             dev['temperature'] = self.getValueForLabel(node, 'Temperature')
             dev['luminance']   = self.getValueForLabel(node, 'Luminance')
         return dev
@@ -84,12 +84,14 @@ class ZWaveController():
     def onNetworkReady(self, network):
         print("network : I'm ready : %d nodes were found." % network.nodes_count)
         print("network : my controller is : %s" % network.controller)
-        #dispatcher.connect(self.onNodeUpdate, ZWaveNetwork.SIGNAL_NODE)
-        #dispatcher.connect(self.onNodeUpdate, ZWaveNetwork.SIGNAL_VALUE)
+        dispatcher.connect(self.onNodeUpdate, ZWaveNetwork.SIGNAL_NODE)
+        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_VALUE)
         dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_NODE_EVENT)
         dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_VALUE_CHANGED)
+        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_VALUE_REFRESHED)
 
     def onNodeUpdate(self, network, node):
+        print('node UPDAAAATEEE : %s.' % node)
         self.network = network
 
     def onNodeUpdateValue(self, network, node, value):
@@ -112,8 +114,11 @@ class ZWaveController():
 
             if dev['type'] == 'appliance' and value.label == 'Power':
                 power = str(value.data)
-                dev['consumption_current'] = power
-                self.onDeviceUpdateCallback(dev)
+                if dev['state'] == 'off' or (dev['state'] == 'on' and float(power) != 0):
+                    dev['consumption_current'] = power
+                    self.onDeviceUpdateCallback(dev)
+                else:
+                    print('WHAATF do i do with this? %s', power)
 
             if dev['type'] == 'appliance' and value.label == 'Energy':
                 energy = str(value.data)

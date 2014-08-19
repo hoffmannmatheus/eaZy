@@ -22,8 +22,7 @@ module.exports = {
           console.log(evt);
 
           if(typeof evt.data == 'object') {
-             console.log
-            io.sockets.emit(evt.data.action, evt.data);
+            io.sockets.emit(evt.data.type, evt.data);
           } else {
             console.log('dunno what to do.');
           }

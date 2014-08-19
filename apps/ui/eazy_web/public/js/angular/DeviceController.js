@@ -2,51 +2,44 @@ app.controller('DeviceController', function($scope, $http, socket){
   socket.on('message', function(message) {
     console.log('socket.on message:',message);
   });
-  socket.on('setstate', function(data) {
-    console.log('socket.on update:',data);
-    $scope.devices.forEach(function(d) {
-      if(d.id == data.id) d.state = data.state;
-    });
-  });
-  socket.on('setvalue', function(data) {
-    console.log('socket.on update:',data);
-    $scope.devices.forEach(function(d) {
-      if(d.id == data.id) d.value = data.value;
-    });
-  });
-  socket.on('setconsumption_current', function(data) {
-    console.log('socket.on update:',data);
-    $scope.devices.forEach(function(d) {
-      if(d.id == data.id)
-        d.consumption_current = Math.round(data.consumption_current*100)/100;
-    });
-  });
-  socket.on('setconsumption_accumulated', function(data) {
-    console.log('socket.on update:',data);
-    $scope.devices.forEach(function(d) {
-      if(d.id == data.id)
-        d.consumption_accumulated = Math.round(data.consumption_accumulated*100)/100;
-    });
+
+  var fixDeviceValues = function(dev) {
+    if(dev.consumption_current) {
+      if(dev.state == 'off') {
+        dev.consumption_current = 0;
+      } else {
+        dev.consumption_current = Math.round(dev.consumption_current*100)/100;
+      }
+    }
+    if(dev.consumption_accumulated) {
+      dev.consumption_accumulated = Math.round(dev.consumption_accumulated*100)/100;
+    }
+    if(dev.temperature) {
+      var temperature = ((dev.temperature - 32) * 5) / 9; // F to C
+      dev.temperature = Math.round(temperature*100)/100;
+    }
+    if(dev.luminance) {
+      dev.luminance = Math.round(dev.luminance*100)/100;
+    }
+    return dev
+  }
+
+  socket.on('update', function(evt) {
+   for(var i = 0; i < $scope.devices.length; i++) {
+      if($scope.devices[i].id == evt.id) {
+        $scope.devices[i] = fixDeviceValues(evt.data);
+      }
+    }
   });
 
-  $scope.init = function(){
-    console.log('hello from device');
+  $scope.init = function() {
     $http.get('/device/find').
     success(function(data, status, headers, config) {
       console.log(data);
       if(!data.devices) return console.log('oh, no devices found!');
       $scope.devices = data.devices;
       $scope.devices.forEach(function(d) {
-        if(d.consumption_current)
-          d.consumption_current = Math.round(d.consumption_current*100)/100;
-        if(d.consumption_current)
-          d.consumption_accumulated = Math.round(d.consumption_accumulated*100)/100;
-        if(d.temperature) {
-          var temperature = ((d.temperature - 32) * 5) / 9; // F to C
-          d.temperature = Math.round(temperature*100)/100;
-        }
-        if(d.luminance)
-          d.luminance = Math.round(d.luminance*100)/100;
+        d = fixDeviceValues(d);
       });
     }).
     error(function(data, status, headers, config) {
