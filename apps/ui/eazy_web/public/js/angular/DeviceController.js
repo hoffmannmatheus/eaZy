@@ -28,6 +28,10 @@ app.controller('DeviceController', function($scope, $http, socket){
    for(var i = 0; i < $scope.devices.length; i++) {
       if($scope.devices[i].id == evt.id) {
         $scope.devices[i] = fixDeviceValues(evt.data);
+        if(evt.data.type == 'sensor' && evt.data.presence == 'detected') {
+          $scope.move_message = evt.data.name+': movement!';
+          angular.element('#move-modal-btn').click()
+        }
       }
     }
   });

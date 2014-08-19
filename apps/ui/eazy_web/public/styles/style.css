@@ -227,7 +227,7 @@ a.dashboard_box:hover {
     border: 2px solid #00AEEF;
 }
 
-a.dashboard_box img {
+a.dashboard_box img, div.modal-body img {
     width: 55%;
     /*height: 45%;*/
     /*min-width: 150px;*/

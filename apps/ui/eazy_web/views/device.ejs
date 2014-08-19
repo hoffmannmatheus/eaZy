@@ -53,5 +53,32 @@
         </div>
     </a>
     <!-- END EACH DEVICE-->
+        
+    <!-- MODAL -->
+    <button id='move-modal-btn' style="display:none;visibility:hidden;" class="btn btn-sm btn-default" data-toggle="modal"
+    data-target=".move-modal" type="button"></button>
+    <div class="modal fade move-modal" tabindex="-1" role="dialog"
+    aria-labelledby="mySmallModalLabel" aria-hidden="false">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4>{{move_message}}</h4>
+          </div>
+          <div class="modal-body">
+            <img src='images/presencesensor.png'/>
+          </div>
+        </div>
+      </div>
+    </div> 
+    <script>
+        $(function() {
+            $('.move-modal').on('shown.bs.modal', function() {
+                window.setTimeout(function(){
+                    $('.move-modal').modal('hide');
+               }, 2000);
+            });
+        });
+    </script>
+    <!-- END MODAL -->
 
 </body>
