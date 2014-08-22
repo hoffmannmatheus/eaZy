@@ -9,6 +9,7 @@ from openzwave.controller import ZWaveController
 from openzwave.network import ZWaveNetwork
 from openzwave.option import ZWaveOption
 from louie import dispatcher, All
+from threading import Timer
 
 
 class ZWaveController():
@@ -30,6 +31,9 @@ class ZWaveController():
         self.network = ZWaveNetwork(options, autostart=False)
         self.onDeviceUpdateCallback = updateCallback
         self.network.start()
+        self.addedConnections = False
+        Timer(2*60, self.setupConnections).start()
+
 
     def tearDown(self):
         network.stop()
@@ -63,6 +67,7 @@ class ZWaveController():
     def getValueForLabel(self, node, label):
         for v in self.network.nodes[node].values: 
             if self.network.nodes[node].values[v].label == label:
+                #self.network.nodes[node].refresh_value(v);
                 return str(self.network.nodes[node].values[v].data_as_string)
         return None
 
@@ -71,6 +76,13 @@ class ZWaveController():
         for val in self.network.nodes[node].get_switches() :
             self.network.nodes[node].set_switch(val, True if state=='on' else False)
         
+    def setupConnections(self):
+        self.addedConnections = True
+        dispatcher.connect(self.onNodeUpdate, ZWaveNetwork.SIGNAL_NODE)
+        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_VALUE)
+        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_NODE_EVENT)
+        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_VALUE_CHANGED)
+        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_VALUE_REFRESHED)
 
     # Event Handlers
 
@@ -84,11 +96,9 @@ class ZWaveController():
     def onNetworkReady(self, network):
         print("network : I'm ready : %d nodes were found." % network.nodes_count)
         print("network : my controller is : %s" % network.controller)
-        dispatcher.connect(self.onNodeUpdate, ZWaveNetwork.SIGNAL_NODE)
-        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_VALUE)
-        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_NODE_EVENT)
-        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_VALUE_CHANGED)
-        dispatcher.connect(self.onNodeUpdateValue, ZWaveNetwork.SIGNAL_VALUE_REFRESHED)
+        self.network = network
+        if not self.addedConnections:
+            self.setupConnections()
 
     def onNodeUpdate(self, network, node):
         print('node UPDAAAATEEE : %s.' % node)
