@@ -8,7 +8,7 @@
     <a ng-if="!devices || devices.length == 0" class='device_box'>
         <p>No devices found.</p>
     </a>
-    <a ng-repeat="device in devices | orderBy:type" href='#' ng-click='changestate(device)' class='device_box'>
+    <a ng-repeat="device in devices | orderBy:type" href='#' ng-if="device.type != 'unknown'" ng-click='changestate(device)' class='device_box'>
         <div class='row'>
             <div class="col-xs-5 col-md-3">
                 <div class="icon {{device.state=='off' && 'inactive'}}">
@@ -18,8 +18,6 @@
                             src='images/light.png'/>
                     <img ng-if="device.type == 'sensor'"
                             src='images/thermometer.png'/>
-                    <!-- <img ng-if="device.type == 'presencesensor'"
-                            src='images/presencesensor.png'/>-->
                 </div>
             </div>
             <div class="col-xs-7 col-md-9">
@@ -27,7 +25,7 @@
                     <!-- APPLIANCE || LIGHT-->
                     <div ng-if="device.type=='light' || device.type=='appliance'" class='device_content'>
                         <div class="col-xs-12 col-md-6">
-                            <p class='device_name'>{{device.name}}</p>
+                            <p class='device_name'>{{device.name || device.product_name}}</p>
                         </div>
                         <div class="col-xs-4 col-md-2">
                             <p class='device_state'>{{device.state}}</p>
@@ -39,13 +37,13 @@
                     <!-- THERMOMETER -->
                     <div ng-if="device.type == 'sensor'" class='device_content'>
                         <div class="col-xs-12 col-md-6">
-                            <p class='device_name'>{{device.name}}</p>
+                            <p class='device_name'>{{device.name || device.product_name}}</p>
                         </div>
                         <div class="col-xs-6 col-md-3">
-                            <p class='device_info'>{{device.temperature}}°C</p>
+                            <p class='device_info'>{{device.temperature || 0}}°C</p>
                         </div>
                         <div class="col-xs-6 col-md-3">
-                            <p class='device_info'>{{device.luminance}} lm</p>
+                            <p class='device_info'>{{device.luminance || 0}} lm</p>
                         </div>
                     </div>
                 </div>

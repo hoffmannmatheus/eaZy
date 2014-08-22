@@ -22,7 +22,7 @@ app.controller('DashboardController', function($scope, $http, socket){
     $http.get('/device/find').
     success(function(data, status, headers, config) {
       console.log(data);
-      $scope.devices = data.devices;
+      $scope.devices = data.devices || [];
       $scope.updateDashboard();
     }).
     error(function(data, status, headers, config) {

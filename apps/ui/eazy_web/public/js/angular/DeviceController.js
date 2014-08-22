@@ -41,7 +41,7 @@ app.controller('DeviceController', function($scope, $http, socket){
     success(function(data, status, headers, config) {
       console.log(data);
       if(!data.devices) return console.log('oh, no devices found!');
-      $scope.devices = data.devices;
+      $scope.devices = data.devices || [];
       $scope.devices.forEach(function(d) {
         d = fixDeviceValues(d);
       });
