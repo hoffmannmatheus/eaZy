@@ -332,6 +332,10 @@ p.device_info {
     text-align: right;
     margin-right: 25%;
 }
+span.device_name {
+    font-weight: 350;
+    font-size: 16px;
+}
 
 div.device_sep {
     border: 1px solid rgba(76,178,192, 0.2);

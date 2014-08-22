@@ -26,6 +26,9 @@ class ZWaveController():
         options.set_append_log_file(False)
         options.set_console_output(False)
         options.set_save_log_level('Debug')
+        options.set_poll_interval(30);
+        options.set_suppress_value_refresh(False)
+        options.addOptionBool("AssumeAwake", True)
         options.set_logging(True)
         options.lock()
         self.network = ZWaveNetwork(options, autostart=False)
@@ -62,6 +65,7 @@ class ZWaveController():
             dev['type'] = 'sensor'
             dev['temperature'] = self.getValueForLabel(node, 'Temperature')
             dev['luminance']   = self.getValueForLabel(node, 'Luminance')
+        dev['battery_level'] = self.getValueForLabel(node, 'Battery Level')
         return dev
 
     def getValueForLabel(self, node, label):
@@ -109,39 +113,51 @@ class ZWaveController():
         print('value: %s.' % value)
         if node.node_id == 1: return # don't send controller notifications
         dev = self.buildDevice(node.node_id)
-        self.network = network
 
         if type(value) is int:
             if dev['type'] == 'sensor' and value == 255:
                 dev['presence'] = 'detected'
+                self.network = network
                 self.onDeviceUpdateCallback(dev)
 
         if type(value) is ZWaveValue:
             if dev['type'] == 'appliance' and value.label == 'Switch':
                 state = value.data and 'on'  or 'off'
                 dev['state'] = state
+                self.network = network
                 self.onDeviceUpdateCallback(dev)
 
             if dev['type'] == 'appliance' and value.label == 'Power':
                 power = str(value.data)
                 if dev['state'] == 'off' or (dev['state'] == 'on' and float(power) != 0):
                     dev['consumption_current'] = power
+                    self.network = network
                     self.onDeviceUpdateCallback(dev)
                 else:
+                    self.network = network
                     print('WHAATF do i do with this? %s', power)
 
             if dev['type'] == 'appliance' and value.label == 'Energy':
                 energy = str(value.data)
                 dev['consumption_accumulated'] = energy
+                self.network = network
                 self.onDeviceUpdateCallback(dev)
 
             if dev['type'] == 'sensor' and value.label == 'Temperature':
                 temperature = str(value.data)
                 dev['temperature'] = temperature
+                self.network = network
                 self.onDeviceUpdateCallback(dev)
 
             if dev['type'] == 'sensor' and value.label == 'Luminance':
                 luminance = str(value.data)
                 dev['luminance'] = luminance 
+                self.network = network
+                self.onDeviceUpdateCallback(dev)
+        
+            if value.label == 'Battery Level':
+                battery = str(value.data)
+                dev['battery_level'] = battery
+                self.network = network
                 self.onDeviceUpdateCallback(dev)
         
