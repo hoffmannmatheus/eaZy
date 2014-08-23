@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS device ( 
+    id INTEGER PRIMARY KEY,
+    id_device INTEGER NOT NULL,
+    name VARCHAR(80) NOT NULL
+); 

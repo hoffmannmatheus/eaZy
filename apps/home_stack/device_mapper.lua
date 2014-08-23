@@ -3,57 +3,36 @@
 -- Device Mapper 
 --
 -- This module maps User devices to real devices retrieved from Device Controller.
+-- The mapping is important so that the 'raw' devices retrieved by the
+-- controller can be turned into 'user' devices, containing user preferences for
+-- that specific device such as a custom device name.
+--
+-- If a device is unknown to the Device Mapper, it will be returned as the 'raw'
+-- device plus an attribute 'registration', set to 'unregistered'.
 --------------------------------------------------------------------------------
---[{'name': 'Smart Energy Switch', 'type': 'appliance',
---'consumption_accumulated': '0.252000004053', 'state': 'on',
---'consumption_current': '0.375', 'id': 3}, 
---{'luminance': None, 'temperature':
---None, 'presence': 'off', 'type': 'sensor', 'id': 4, 'name': 'EZMotion+ 3-in-1
---Sensor'}, 
---{'name': 'Smart Energy Switch', 'type': 'appliance',
---'consumption_accumulated': '0.0', 'state': 'on', 'consumption_current': '0.0',
---'id': 5}]
-
-local mock_list = {
-    {
-    id=1,
-    registration="registered",
-    name="My Cute Appliace",
-    },
-    {
-    id=2,
-    registration="registered",
-    name="LG Monitor",
-    },
-    {
-    id=3,
-    registration="registered",
-    name="Multisensor",
-    }
-}
-
-local mock_id_map = {
-   [3] = 1,
-   [4] = 3,
-   [5] = 2 
-}
-
 
 local device_mapper = {}
+local db = require('apps.home_stack.data.db')
 
-local log = function(dev) for k,v in pairs(dev) do print(k,v) end end
 --------------------------------------------------------------------------------
 -- Maps a Raw Device List (eg. list got from Device Controller with real device
--- ID's) to a User Device List.
+-- ID's) to a User Device List (eg. devices with user custom attributes).
+--
+-- @param raw_list A device or device list retrieved directly from 
+-- device_controller.
 --------------------------------------------------------------------------------
 
 function device_mapper.map(raw_list) 
     if not raw_list then return {} end
-    local id_map = mock_id_map; -- TODO use real
+    local user_devices = db.getDevices()
+    local id_map = device_mapper.buildIdMap(user_devices)
     local fixDevice = function(device)
         local id = id_map[device.id]
         -- get the user device
-        local user_prefs = device_mapper.getUserDeviceById(id)
+        local user_prefs = false
+        for k, device in pairs(user_devices) do
+            if device.id == id then user_prefs = device end
+        end
         if not user_prefs then
             -- unknown device
             device.registration='unregistered'
@@ -80,6 +59,7 @@ function device_mapper.map(raw_list)
         end
         return device
     end
+
     if #raw_list == 0 and next(raw_list) then -- single device
         return fixDevice(raw_list)
     else -- device list
@@ -92,25 +72,33 @@ function device_mapper.map(raw_list)
 end
 
 --------------------------------------------------------------------------------
--- Gets a User Device by ID
---------------------------------------------------------------------------------
-
-function device_mapper.getUserDeviceById(id)
-    local list = mock_list  -- TODO use real
-    for k, device in pairs(list) do
-        if device.id == id then return device end
-    end
-end
-
---------------------------------------------------------------------------------
--- Gets a Raw Device ID
+-- Gets a Raw Device ID.
+--
+-- @param id The User Device ID.
 --------------------------------------------------------------------------------
 
 function device_mapper.getRawDeviceId(id)
-    local id_map = mock_id_map  -- TODO use real
+    local id_map = device_mapper.buildIdMap()
     for raw_id, user_id in pairs(id_map) do
         if user_id == id then return raw_id end
     end
 end
 
+--------------------------------------------------------------------------------
+-- Mounts an id_map [device_id, user_id]
+--
+-- @param list Device list retrieved from db.getDevices. If not given, will
+-- retrieve the list from the database.
+--------------------------------------------------------------------------------
+
+function device_mapper.buildIdMap(list)
+    list = list or db.getDevices()
+    local id_map = {}
+    for _, d in ipairs(list) do
+        id_map[d.id_device] = d.id
+    end
+    return id_map
+end
+
 return device_mapper
+

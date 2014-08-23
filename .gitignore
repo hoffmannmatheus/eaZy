@@ -30,3 +30,5 @@ bin/
 # OpenZWave logs
 OZW_Log.txt
 
+# Home Stack Database
+apps/home_stack/data/data.db
