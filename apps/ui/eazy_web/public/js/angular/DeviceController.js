@@ -29,7 +29,8 @@ app.controller('DeviceController', function($scope, $http, socket){
       if($scope.devices[i].id == evt.id) {
         $scope.devices[i] = fixDeviceValues(evt.data);
         if(evt.data.type == 'sensor' && evt.data.presence == 'detected') {
-          $scope.move_message = evt.data.name+': movement!';
+          $scope.move_message = (evt.data.name || evt.data.product_name)
+              + ': movement!';
           angular.element('#move-modal-btn').click()
         }
       }
@@ -37,6 +38,8 @@ app.controller('DeviceController', function($scope, $http, socket){
   });
 
   $scope.init = function() {
+    $scope.deviceToUpdate = {};
+    $scope.deviceToDelete = {};
     $http.get('/device/find').
     success(function(data, status, headers, config) {
       console.log(data);
@@ -65,6 +68,38 @@ app.controller('DeviceController', function($scope, $http, socket){
           d.state = device.state;
         }
       });
+    }).
+    error(function(data, status, headers, config) {
+    });
+  };
+
+  $scope.setDeviceToUpdate = function(device) {
+    $scope.deviceToUpdate = device;
+  };
+
+  $scope.updateDevice = function(device) {
+    if(!device) return console.log('Trying to update null device');
+    closeUpdateModal()
+    $http.post('/device/update', {device:device}).
+    success(function(data, status, headers, config) {
+      if(data.err) console.log(data.err);
+      $scope.init();
+    }).
+    error(function(data, status, headers, config) {
+    });
+  };
+
+  $scope.setDeviceToDelete = function(device) {
+    $scope.deviceToDelete = device;
+  };
+
+  $scope.deleteDevice = function(device) {
+    if(!device) return console.log('Trying to delete null device');
+    closeDeleteModal()
+    $http.post('/device/delete', {device:device}).
+    success(function(data, status, headers, config) {
+      if(data.err) console.log(data.err);
+      $scope.init();
     }).
     error(function(data, status, headers, config) {
     });
