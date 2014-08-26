@@ -8,7 +8,7 @@
     <a ng-if="!devices || devices.length == 0" class='device_box'>
         <p>No devices found.</p>
     </a>
-    <div ng-repeat="device in devices | orderBy:device.type">
+    <div ng-repeat="device in devices">
         <a href='#' ng-if="device.type != 'unknown' 
                         && device.registration != 'unregistered'
                         && device.registration != 'missing'" 
@@ -57,8 +57,8 @@
             </div>
         </a>
 
-        <div ng-if="device.registration == 'missing'" >
-            <h2>Missing device</h2> 
+        <div class='device_irregular' ng-if="device.registration == 'missing'" >
+            <h3>Missing device</h3> 
             <table class="table">
                 <tr>
                     <td>{{device.name || device.product_name}} ({{device.type}})</td>
@@ -69,7 +69,7 @@
                 </tr>
             </table>
         </div>
-        <div ng-if="device.registration == 'unregistered'">
+        <div class='device_irregular' ng-if="device.registration == 'unregistered'">
             <h3>Unknown device</h3>
             <table class="table">
                 <tr>
@@ -81,7 +81,7 @@
                 </tr>
             </table>
         </div>
-        <div ng-if="device.type == 'unknown'">
+        <div class='device_irregular' ng-if="device.type == 'unknown'">
             <h3>sorry, but currently eaZy does not know about</h3>
             <table class="table">
                 <tr>

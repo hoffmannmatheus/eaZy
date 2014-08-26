@@ -34,7 +34,7 @@ end
 --------------------------------------------------------------------------------
 
 function db.getDevices()
-    local select_stmt = assert(db.con:prepare("SELECT * FROM device"))
+    local select_stmt = assert(db.con:prepare("SELECT * FROM device;"))
     local devices = {}
     for row in select_stmt:nrows() do
         table.insert(devices, row)
@@ -43,15 +43,60 @@ function db.getDevices()
 end
 
 --------------------------------------------------------------------------------
+-- Returns the device with the given id_device, if exists.
+-- 
+-- @param id_device The real device id of the device object.
+-- @return table The device retrieced from database, if exists.
+--------------------------------------------------------------------------------
+
+function db.getDevice(id_device)
+    if not id_device then return nil end
+    local query = 'SELECT * FROM device WHERE id_device = '..id_device..';'
+    local select_stmt = assert(db.con:prepare(query))
+    local device = {}
+    for row in select_stmt:nrows() do
+        table.insert(device, row)
+    end
+    return device
+end
+
+--------------------------------------------------------------------------------
 -- Adds a device to the database. The device must be a table, containing at
--- least {id_device=#,name=""}.
+-- least {id_device=#,name="",type=""}.
 --
 -- @param device The device to be added.
 --------------------------------------------------------------------------------
 
 function db.addDevice(device)
-    local query = 'INSERT INTO device ("id_device", "name") '
-                ..'VALUES ('..device.id_device..',"'..device.name..'")'
+    local query = 'INSERT INTO device ("id_device", "name", "type") '
+                ..'VALUES ('..device.id_device..',"'..device.name..'","'
+                ..device.type..'");'
+    db.con:exec(query)
+end
+
+--------------------------------------------------------------------------------
+-- Updates a device in thedatabase. The device must be a table, containing at
+-- least {id_device=#,name="",type=""}.
+--
+-- @param device The device to be updated.
+--------------------------------------------------------------------------------
+
+function db.updateDevice(device)
+    local query = 'UPDATE device '
+                ..'SET name = "'..device.name..'", type = "'..device.type..'" '
+                ..'WHERE id_device = '..device.id_device..';'
+    db.con:exec(query)
+end
+
+--------------------------------------------------------------------------------
+-- Deletes a device in the database. The device must be a table, containing at
+-- least {id_device=#}.
+--
+-- @param device The device to be deleted.
+--------------------------------------------------------------------------------
+
+function db.deleteDevice(device)
+    local query = 'DELETE FROM device WHERE id_device = '..device.id_device..';'
     db.con:exec(query)
 end
 

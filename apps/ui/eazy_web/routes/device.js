@@ -22,8 +22,30 @@ router.post('/setstate', function(req, res) {
   if(['on','off'].indexOf(state) == -1)
       return res.json({err:'Invalid state provided'});
 
-  zbus.sendMessage({action:'setstate',id:id,state:state});
+  zbus.sendMessage({type:'setstate',id:id,state:state});
   res.json({status:'ok'});
+});
+
+router.post('/update', function(req, res) {
+  var device = req.param('device');
+  if(!device) return res.json({err:'No device provided'});
+
+  console.log('updating',device);
+  zbus.sendMessage({type:'update', data:device});
+  setTimeout(function() {
+      res.json({status:'ok'});
+  }, 500);
+});
+
+router.post('/delete', function(req, res) {
+  var device = req.param('device');
+  if(!device) return res.json({err:'No device provided'});
+
+  console.log('deletting',device);
+  zbus.sendMessage({type:'delete', data:device});
+  setTimeout(function() {
+      res.json({status:'ok'});
+  }, 500);
 });
 
 module.exports = router;

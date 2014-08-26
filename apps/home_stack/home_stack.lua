@@ -15,6 +15,7 @@ local bus_server    = require('lib.bus.server')
 
 local scene_engine  = require('apps.home_stack.scene_engine')
 local device_mapper = require('apps.home_stack.device_mapper')
+local db            = require('apps.home_stack.data.db')
 
 --------------------------------------------------------------------------------
 -- Local functions
@@ -94,12 +95,19 @@ function onUIMessage(msg)
             ui:sendResponse('So you want '..msg.data..'?')
         end
     elseif msg.type == 'send' then
-        msg.data.id = device_mapper.getRawDeviceId(msg.data.id)
-        device:distribute({
-            sender = 'home_stack',
-            type   = msg.type,
-            data   = msg.data
-        })
+        evt = msg.data;
+        if evt.type == 'update' then
+            device_mapper.updateDevice(evt.data)
+        elseif evt.type == 'delete' then
+            device_mapper.deleteDevice(evt.data)
+        elseif evt.type == 'setstate' then
+            msg.data.id = device_mapper.getRawDeviceId(msg.data.id)
+            device:distribute({
+                sender = 'home_stack',
+                type   = msg.type,
+                data   = msg.data
+            })
+        end
     end
 end
 

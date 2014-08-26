@@ -287,7 +287,6 @@ a.device_box {
     /*height: 60%;*/
     color: #424242;
     margin-top: 2.5%;
-    margin-top: 2.5%;
     padding: 10px;
     text-decoration: none;
     display: block;
@@ -342,4 +341,10 @@ div.device_sep {
     width: 90%;
     height: 2px;
     margin: 0 auto 0 auto;
+}
+
+div.device_irregular {
+    margin-top: 2.5%;
+    border: 2px solid rgba(76,178,192, 0.2);
+    border-radius: 8px;
 }
