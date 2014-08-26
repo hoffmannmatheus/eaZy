@@ -23,25 +23,27 @@ local db = require('apps.home_stack.data.db')
 -- device_controller.
 --------------------------------------------------------------------------------
 
-function device_mapper.map(raw_list) 
+function device_mapper.mapToUI(raw_list) 
     if not raw_list then return {} end
-    local ui_devices = db.getDevices()
+    local db_devices = db.getDevices()
 
     local fixDevice = function(device)
         -- get the ui device
         local ui_prefs = false
-        for k, d in pairs(ui_devices) do
-            if device.id_device == d.id_device then ui_prefs = d end
+        for k, d in pairs(db_devices) do
+            if device.id == d.id_device then ui_prefs = d end
         end
         if not ui_prefs then
             -- unknown device
-            device.registration='unregistered'
-            device.id = device.id_device
+            device.registration = 'unregistered'
+            -- fix id
+            device.id_device = device.id
+            device.id = nil
         else
-            -- add settings to the object
+            -- fill device with ui settings
             for key, value in pairs(ui_prefs) do
                 if key ~= 'type' then
-                    device[key] = value -- fill device with ui settings
+                    device[key] = value
                 end
             end
         end
@@ -71,16 +73,16 @@ function device_mapper.map(raw_list)
             table.insert(list, fixDevice(device))
         end
         -- check if any device known by the DB is missing
-        for k, ui_dev in ipairs(ui_devices) do
+        for k, db_dev in ipairs(db_devices) do
             local found = false
             for j, dev in ipairs(list) do
-                if ui_dev.id_device == dev.id_device then
+                if db_dev.id_device == dev.id_device then
                     found = true
                 end
             end
             if not found then -- if not, device to list
-                ui_dev.registration = 'missing'
-                table.insert(list, ui_dev)
+                db_dev.registration = 'missing'
+                table.insert(list, db_dev)
             end
         end
         return list
@@ -125,30 +127,19 @@ end
 --------------------------------------------------------------------------------
 -- Gets a Raw Device ID.
 --
--- @param id The UI Device ID.
+-- @param device The UI Device.
+-- @return number The raw Device ID, used by Device Controller.
 --------------------------------------------------------------------------------
 
-function device_mapper.getRawDeviceId(id)
-    local id_map = device_mapper.buildIdMap()
-    for raw_id, ui_id in pairs(id_map) do
-        if ui_id == id then return raw_id end
+function device_mapper.getRawDeviceId(device)
+    if not device then return end
+    if device.id_device then return device.id_device end
+    local id = device.id
+    for _, db_dev in pairs(db.getDevices()) do
+        if id == db_dev.id then
+            return db_dev.id_device
+        end
     end
-end
-
---------------------------------------------------------------------------------
--- Mounts an id_map [device_id, ui_id]
---
--- @param list Device list retrieved from db.getDevices. If not given, will
--- retrieve the list from the database.
---------------------------------------------------------------------------------
-
-function device_mapper.buildIdMap(list)
-    list = list or db.getDevices()
-    local id_map = {}
-    for _, d in ipairs(list) do
-        id_map[d.id_device] = d.id
-    end
-    return id_map
 end
 
 return device_mapper

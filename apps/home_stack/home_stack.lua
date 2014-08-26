@@ -68,7 +68,7 @@ function onDeviceMessage(msg)
     elseif msg.type == 'send' then 
         evt = msg.data;
         if evt.type == 'update' then
-            evt.data = device_mapper.map(evt.data)
+            evt.data = device_mapper.mapToUI(evt.data)
             evt.id = evt.data.id
         end
         ui:distribute({
@@ -90,7 +90,7 @@ function onUIMessage(msg)
     if msg.type == 'get' then
         if msg.data == 'devicelist' then
             local list = getDeviceResponse('devicelist')
-            ui:sendResponse(device_mapper.map(list.data))
+            ui:sendResponse(device_mapper.mapToUI(list.data))
         else
             ui:sendResponse('So you want '..msg.data..'?')
         end
@@ -101,7 +101,7 @@ function onUIMessage(msg)
         elseif evt.type == 'delete' then
             device_mapper.deleteDevice(evt.data)
         elseif evt.type == 'setstate' then
-            msg.data.id = device_mapper.getRawDeviceId(msg.data.id)
+            msg.data.id = device_mapper.getRawDeviceId(msg.data)
             device:distribute({
                 sender = 'home_stack',
                 type   = msg.type,
