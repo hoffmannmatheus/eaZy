@@ -50,7 +50,7 @@ class ZWaveController():
 
     def buildDevice(self, node):
         dev = {}
-        dev['id'] = node
+        dev['id_device'] = int(self.network.home_id)*1000 + node
         dev['type'] = 'unknown'
         dev['product_name'] = self.network.nodes[node].product_name
         if self.getValueForLabel(node, 'Switch'):
@@ -75,7 +75,8 @@ class ZWaveController():
                 return str(self.network.nodes[node].values[v].data_as_string)
         return None
 
-    def setDeviceState(self, node, state):
+    def setDeviceState(self, id_device, state):
+        node = id_device%1000
         if not self.network.nodes[node]: return
         for val in self.network.nodes[node].get_switches() :
             self.network.nodes[node].set_switch(val, True if state=='on' else False)

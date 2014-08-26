@@ -22,16 +22,16 @@ def onHomeStackMessage(msg):
             devicelist = zwave.getDeviceList()
             home_stack.send(devicelist, 'response')
     elif msg['type'] == 'send':
-        device_id = msg['data']['id']
-        action = msg['data']['action']
+        id_device = msg['data']['id']
+        mtype = msg['data']['type']
         state = msg['data']['state']
-        if action == 'setstate':
-            zwave.setDeviceState(device_id, state)
-            print('New state of ' + str(device_id) + ' is ' + state)
+        if mtype == 'setstate':
+            zwave.setDeviceState(id_device, state)
+            print('New state of ' + str(id_device) + ' is ' + state)
 
 def onDeviceUpdate(device):
     print('will send notifycation!')
-    msg = {'type':'update','data':device,'id':device['id']}
+    msg = {'type':'update','data':device,'id_device':device['id_device']}
     home_stack.send(msg, 'send')
 
 home_stack = BusClient('device_controller', 'home_stack')
