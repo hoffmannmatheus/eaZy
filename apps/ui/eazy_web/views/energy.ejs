@@ -1,0 +1,27 @@
+<% layout('layout') -%>
+
+<body ng-controller='EnergyController' ng-init='init()'>
+
+    <h1>Overal Energy Consumption</h1>
+    <h2>{{overalConsumption || "0.0"}} kWh</h2>
+
+    <h1>Total consumption per Device</h1>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Consumpion</th>
+        </tr>
+        <tr ng-repeat="device in devices" ng-if="device.consumption_accumulated && device.type != 'unknown' && device.registration != 'missing'">
+            <td>{{device.name || device.product_name}}</td>
+            <td>{{device.type}}</td>
+            <td>{{device.consumption_accumulated}} kWh</td>
+        </tr>
+        <tr ng-if="!devices || devices.length == 0">
+            <td></td>
+            <td>No devices found.</td>
+            <td></td>
+        </tr>
+    </table>
+        
+</body>

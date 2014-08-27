@@ -38,9 +38,9 @@ var settings  = require('./routes/settings');
 
 app.get('*', dashboard);
 app.use('/', dashboard);
-app.use('/device', device);
-app.use('/energy', energy);
-app.use('/scene', energy);
+app.use('/device',   device);
+app.use('/energy',   energy);
+app.use('/scene',    scene);
 app.use('/settings', settings);
 
 

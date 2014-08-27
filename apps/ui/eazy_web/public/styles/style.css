@@ -130,6 +130,7 @@ div.main.container {
 h1 {
     color: #118798;
     font-weight: 300;
+    margin: 20px 0px 10px 0px;
 }
 
 h1.breadcrumbs {
