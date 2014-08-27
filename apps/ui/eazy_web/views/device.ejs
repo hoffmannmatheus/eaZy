@@ -1,6 +1,5 @@
 <% layout('layout') -%>
 
-<link type="text/css" href='http://sailsjs.org/styles/fonts.css' rel='stylesheet'/>
 <body ng-controller='DeviceController' ng-init='init()'>
 
 
@@ -121,7 +120,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Device Name</label>
-                            <input type="text" name="name" ng-model="deviceToUpdate.name" placeholder="" class="form-control" required>
+                            <input type="text" name="name" id="update_form" ng-model="deviceToUpdate.name" placeholder="" class="form-control focusedInput" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -159,6 +158,9 @@
                 window.setTimeout(function(){
                     $('.move-modal').modal('hide');
                }, 2000);
+            });
+            $('.updateDeviceModal').on('shown.bs.modal', function() {
+                $('#update_form').focus();
             });
             closeUpdateModal = function() {
                 $('.updateDeviceModal').modal('hide');
