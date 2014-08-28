@@ -304,6 +304,7 @@ div.icon {
 
 div.icon img{
     width: 55%;
+    max-width: 100px;
     margin: auto;
 }
 
@@ -349,3 +350,19 @@ div.device_irregular {
     border: 2px solid rgba(76,178,192, 0.2);
     border-radius: 8px;
 }
+
+table.scene_table {
+    text-align: center;
+}
+
+table.scene_table tr th{
+    text-align: center;
+}
+
+td.scene_block span {
+    text-align: center;
+    clear:both;
+    width:100%;
+    margin: 0 auto 0 auto;
+}
+

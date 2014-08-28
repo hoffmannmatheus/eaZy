@@ -1,0 +1,103 @@
+<% layout('layout') -%>
+
+<body ng-controller='SceneController' ng-init='init()'>
+
+
+    <h1>My Scenes</h1>
+    <br/>
+    <a data-toggle="modal" data-target=".createSceneModal" href='#'>Create Scene <span class="glyphicon glyphicon-plus-sign"></span></a>
+    <br/>
+    <br/>
+
+    <table class="table scene_table">
+        <tr>
+            <th>Source</th>
+            <th></th>
+            <th>Target</th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="scene in scenes">
+            <td class='scene_block'>
+                {{scene.source_device.name || scene.source_device.product_name}}
+                <span class="glyphicon glyphicon-plus"></span>
+                {{scene.source_state}}
+            </td>
+            <td class='scene_block'>
+                <span class="glyphicon glyphicon-arrow-right"></span>
+            </td>
+            <td class='scene_block'>
+                {{scene.target_device.name || scene.target_device.product_name}}
+                <span class="glyphicon glyphicon-plus"></span>
+               {{scene.target_state}}</td>
+            <td>
+                <a data-toggle="modal" data-target=".deleteSceneModal" href='#' ng-click='setSceneToDelete(scene)'>
+                    Remove <span class="glyphicon glyphicon-minus-sign"></span>
+                </a>
+            </td>
+        </tr>
+        <tr ng-if="!scenes || scenes.length == 0">
+            <td></td>
+            <td>No devices found.</td>
+            <td></td>
+        </tr>
+    </table>
+
+    <!-- UPDATE CREATE SCENE MODAL -->
+    <div class="modal fade createSceneModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Create Scene</h4>
+                </div>
+                <form role="form" ng-submit="createScene(new_scene)">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Source Device</label>
+                            <input type="text" name="source" id="update_form" ng-model="new_scene.source_device" placeholder="" class="form-control focusedInput" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                        <button class="btn btn-primary" type="submit">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> 
+    <!-- END CREATE SCENE MODAL -->
+
+    <!-- DELETE SCENE MODAL -->
+    <div class="modal fade deleteSceneModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Delete Confirmation</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure you wish to delete the Scene "{{sceneToDelete.source_device.name || sceneToDelete.source_device.product_name}}"
+                    <span class="glyphicon glyphicon-plus"></span>
+                    "{{sceneToDelete.target_device.name || sceneToDelete.target_device.product_name}}"?
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                    <a data-toggle="modal" data-target=".deleteSceneModal" href='#' ng-click='setSceneToDelete(scene)'>Remove <span class="glyphicon glyphicon-minus-sign"></span>
+                </a>
+            </td>
+        </tr>
+    </table>
+    <!-- END DELETE SCENE MODAL -->
+
+    <script>
+        $(function() {
+            $('.createSceneModal').on('shown.bs.modal', function() {
+                $('#scene_name_field').focus();
+            });
+            closeCreateSceneModal = function() {
+                $('.createSceneModal').modal('hide');
+            };
+            closeDeleteSceneModal = function() {
+                $('.deleteSceneModal').modal('hide');
+            };
+        });
+    </script>
+</body>
