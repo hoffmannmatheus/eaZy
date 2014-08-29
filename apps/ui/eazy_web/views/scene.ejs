@@ -5,7 +5,7 @@
 
     <h1>My Scenes</h1>
     <br/>
-    <a data-toggle="modal" data-target=".createSceneModal" href='#'>Create Scene <span class="glyphicon glyphicon-plus-sign"></span></a>
+    <a ng-click='loadDevices()' data-toggle="modal" data-target=".createSceneModal" href='#'>Create Scene <span class="glyphicon glyphicon-plus-sign"></span></a>
     <br/>
     <br/>
 
@@ -37,23 +37,45 @@
         </tr>
         <tr ng-if="!scenes || scenes.length == 0">
             <td></td>
-            <td>No devices found.</td>
+            <td>No scenes found.</td>
             <td></td>
         </tr>
     </table>
 
-    <!-- UPDATE CREATE SCENE MODAL -->
+    <!-- CREATE SCENE MODAL -->
     <div class="modal fade createSceneModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4>Create Scene</h4>
                 </div>
-                <form role="form" ng-submit="createScene(new_scene)">
+                <form role="form" class="form-horizontal" ng-submit="addScene(new_scene)">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Source Device</label>
-                            <input type="text" name="source" id="update_form" ng-model="new_scene.source_device" placeholder="" class="form-control focusedInput" required>
+                            <label class="col-sm-5 control-label"><span class="badge">1</span>&nbsp;When device</label>
+                            <select class="col-sm-5" ng-model="new_scene.source_device" data-ng-options="d.name group by d.type for d in devices">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label"><span class="badge">2</span>&nbsp;with capability</label>
+                            <select class="col-sm-5" ng-model="new_scene.source_attr" data-ng-options="attr for attr in (new_scene.source_device | key_filter)" required>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label"><span class="badge">3</span>&nbsp;has the value:</label>
+                            <input class="col-sm-5" type="text" name="source_value" ng-model="new_scene.source_value" placeholder="on | off" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label"><span class="badge">4</span>&nbsp;the device</label>
+                            <select class="col-sm-5" ng-model="new_scene.target_device" data-ng-options="d.name group by d.type for d in devices" required>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label"><span class="badge">5</span>&nbsp;will turn</label>
+                            <select class="col-sm-5" ng-model="new_scene.target_state" required>
+                                <option>on</option>
+                                <option>off</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
