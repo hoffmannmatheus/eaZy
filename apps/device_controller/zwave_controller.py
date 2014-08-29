@@ -65,6 +65,7 @@ class ZWaveController():
             dev['type'] = 'sensor'
             dev['temperature'] = self.getValueForLabel(node, 'Temperature')
             dev['luminance']   = self.getValueForLabel(node, 'Luminance')
+            dev['presence']    = "undetected"
         dev['battery_level'] = self.getValueForLabel(node, 'Battery Level')
         return dev
 

@@ -4,8 +4,8 @@
 --
 -- Module responsible for interfacing User Interface and Device Controller.
 --
--- The objective of Home Stack is to provide a seamless interface to where any
--- UI implementation can access to get user information.
+-- The objective of Home Stack is to provide a seamless interface through where
+-- any UI implementation can access (using Zero MQ) to get user information.
 -- Any user preferences, device names and scenes are stored in here.
 -- Also, all events trigged by scenes are sent to UI from Home Stack.
 --------------------------------------------------------------------------------
@@ -67,6 +67,7 @@ function onDeviceMessage(msg)
         })
     elseif msg.type == 'send' then 
         evt = msg.data;
+
         if evt.type == 'update' then
             evt.data = device_mapper.mapToUI(evt.data)
             evt.id = evt.data.id
@@ -76,6 +77,17 @@ function onDeviceMessage(msg)
             type   = msg.type,
             data   = evt
         })
+        if evt.type == 'update' then
+            local event = scene_engine.check(evt.data)
+            if event then
+                event.id = device_mapper.getRawDeviceId(event)
+                device:distribute({
+                    sender = 'home_stack',
+                    type   = msg.type,
+                    data   = event
+                })
+            end
+        end
     else
         ui:distribute({
             sender = 'home_stack',
@@ -91,15 +103,20 @@ function onUIMessage(msg)
         if msg.data == 'devicelist' then
             local list = getDeviceResponse('devicelist')
             ui:sendResponse(device_mapper.mapToUI(list.data))
-        else
-            ui:sendResponse('So you want '..msg.data..'?')
+        elseif msg.data == 'scenelist' then
+            local list = scene_engine.getScenes()
+            ui:sendResponse(list)
         end
     elseif msg.type == 'send' then
         evt = msg.data;
-        if evt.type == 'update' then
+        if evt.type == 'updatedevice' then
             device_mapper.updateDevice(evt.data)
-        elseif evt.type == 'delete' then
+        elseif evt.type == 'deletedevice' then
             device_mapper.deleteDevice(evt.data)
+        elseif evt.type == 'addscene' then
+            scene_engine.add(evt.data)
+        elseif evt.type == 'deletescene' then
+            scene_engine.delete(evt.data)
         elseif evt.type == 'setstate' then
             msg.data.id = device_mapper.getRawDeviceId(msg.data)
             device:distribute({

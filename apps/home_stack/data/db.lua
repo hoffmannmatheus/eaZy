@@ -6,7 +6,7 @@
 --
 -- The Home Stack database is used to store only device customizations made by
 -- the user, such as a custom device name. The database does not contain
--- information about the device itself, such as type or capabilities.
+-- information about the device itself, such as device capabilities.
 --------------------------------------------------------------------------------
 
 local db = {}
@@ -31,6 +31,8 @@ end
 --------------------------------------------------------------------------------
 -- Returns a list of the devices on the database. 
 -- Each item on the list is in the form {id=#,id_device=#,name=""}
+--
+-- @return table The device list.
 --------------------------------------------------------------------------------
 
 function db.getDevices()
@@ -65,6 +67,7 @@ end
 -- least {id_device=#,name="",type=""}.
 --
 -- @param device The device to be added.
+-- @return boolean True if command was successfully executed, false otherwise.
 --------------------------------------------------------------------------------
 
 function db.addDevice(device)
@@ -72,6 +75,7 @@ function db.addDevice(device)
                 ..'VALUES ('..device.id_device..',"'..device.name..'","'
                 ..device.type..'");'
     db.con:exec(query)
+    return true
 end
 
 --------------------------------------------------------------------------------
@@ -79,6 +83,7 @@ end
 -- least {id_device=#,name="",type=""}.
 --
 -- @param device The device to be updated.
+-- @return boolean True if command was successfully executed, false otherwise.
 --------------------------------------------------------------------------------
 
 function db.updateDevice(device)
@@ -86,6 +91,7 @@ function db.updateDevice(device)
                 ..'SET name = "'..device.name..'", type = "'..device.type..'" '
                 ..'WHERE id_device = '..device.id_device..';'
     db.con:exec(query)
+    return true
 end
 
 --------------------------------------------------------------------------------
@@ -93,11 +99,65 @@ end
 -- least {id_device=#}.
 --
 -- @param device The device to be deleted.
+-- @return boolean True if command was successfully executed, false otherwise.
 --------------------------------------------------------------------------------
 
 function db.deleteDevice(device)
     local query = 'DELETE FROM device WHERE id_device = '..device.id_device..';'
     db.con:exec(query)
+    return true
+end
+
+--------------------------------------------------------------------------------
+-- Returns a list of the scene on the database. 
+-- Each item on the list is a scene table.
+--
+-- @return table The list of scenes.
+--------------------------------------------------------------------------------
+
+function db.getScenes()
+    local select_stmt = assert(db.con:prepare("SELECT * FROM scene;"))
+    local scenes
+    for row in select_stmt:nrows() do
+        table.insert(scenes, row)
+    end
+    return scenes
+end
+
+--------------------------------------------------------------------------------
+-- Adds a scene to the database. The device must be a table, like:
+--   {source_device=#,source_attr="",source_value="",target_device=#,
+--     target_state=""}.
+--
+-- @param scene The scene to be added.
+-- @return boolean True if command was successfully executed, false otherwise.
+--------------------------------------------------------------------------------
+
+function db.addScene(scene)
+    local query = 'INSERT INTO scene ("source_device", "source_attr", '
+                ..'"source_value", "target_device", "target_state") VALUES ('
+                ..scene.source_device.. ',"'
+                ..scene.source_attr..   '","'
+                ..scene.source_value..  '",'
+                ..scene.target_device.. ',"'
+                ..scene.target_state..  '");'
+    db.con:exec(query)
+    return true
+end
+
+--------------------------------------------------------------------------------
+-- Deletes a scene in the database. The param must be the scene table, which 
+-- contains the scene database id.
+--
+-- @param scene The scene to be deleted.
+-- @return boolean True if command was successfully executed, false otherwise.
+--------------------------------------------------------------------------------
+
+function db.deleteScene(scene)
+    if not scene or not scene.id then return false end
+    local query = 'DELETE FROM scene WHERE id = '..scene.id..';'
+    db.con:exec(query)
+    return true
 end
 
 db.setup()

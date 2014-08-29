@@ -30,7 +30,7 @@ router.post('/update', function(req, res) {
   var device = req.param('device');
   if(!device) return res.json({err:'No device provided'});
 
-  zbus.sendMessage({type:'update', data:device});
+  zbus.sendMessage({type:'updatedevice', data:device});
   setTimeout(function() {
       res.json({status:'ok'});
   }, 1500);
@@ -40,7 +40,7 @@ router.post('/delete', function(req, res) {
   var device = req.param('device');
   if(!device) return res.json({err:'No device provided'});
 
-  zbus.sendMessage({type:'delete', data:device});
+  zbus.sendMessage({type:'deletedevice', data:device});
   setTimeout(function() {
       res.json({status:'ok'});
   }, 1500);
