@@ -117,7 +117,7 @@ end
 
 function db.getScenes()
     local select_stmt = assert(db.con:prepare("SELECT * FROM scene;"))
-    local scenes
+    local scenes = {}
     for row in select_stmt:nrows() do
         table.insert(scenes, row)
     end

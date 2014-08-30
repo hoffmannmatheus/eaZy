@@ -33,7 +33,8 @@ end
 --------------------------------------------------------------------------------
 
 function scene_engine.add(scene)
-    if scene and scene.source_device and scene.source_attr and scene.souce_value 
+    if not scene then return end
+    if scene.source_device and scene.source_attr and scene.source_value 
             and scene.target_device and scene.target_state then
         db.addScene(scene)
         db_updated = true

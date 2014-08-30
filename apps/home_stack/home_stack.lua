@@ -66,7 +66,7 @@ function onDeviceMessage(msg)
             data='foo'
         })
     elseif msg.type == 'send' then 
-        evt = msg.data;
+        local evt = msg.data;
 
         if evt.type == 'update' then
             evt.data = device_mapper.mapToUI(evt.data)
@@ -98,7 +98,7 @@ function onDeviceMessage(msg)
 end
 
 function onUIMessage(msg)
-    log('UI Message: ', msg.sender, msg.type, msg.data)
+    log('UI Message: ', msg.sender, msg.type, json.encode(msg.data))
     if msg.type == 'get' then
         if msg.data == 'devicelist' then
             local list = getDeviceResponse('devicelist')
@@ -108,7 +108,7 @@ function onUIMessage(msg)
             ui:sendResponse(list)
         end
     elseif msg.type == 'send' then
-        evt = msg.data;
+        local evt = msg.data;
         if evt.type == 'updatedevice' then
             device_mapper.updateDevice(evt.data)
         elseif evt.type == 'deletedevice' then

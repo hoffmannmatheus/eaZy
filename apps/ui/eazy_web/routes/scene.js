@@ -9,6 +9,7 @@ router.get('/', function(req, res) {
 router.get('/find', function(req, res) {
   zbus.getData('scenelist', function(err, scenes) {
     if(err) return res.json({err:"Could not list scenes."});
+    if(!scenes || !scenes.length) scenes = [];
     res.json({scenes:scenes});
   });
 });

@@ -1,6 +1,6 @@
 app.filter('key_filter', function() {
   return function(device) {
-    if(!device) return null;
+    if(!device || typeof device != "object") return null;
     var possibleKeys = ['state', 'battery_level', 'consumption_current',
         'consumption_accumulated', 'temperature', 'luminance', 'presence'];
     var keys = [];
@@ -32,8 +32,6 @@ app.controller('SceneController', function($scope, $http, socket){
     $http.get('/scene/find').
     success(function(data, status, headers, config) {
       console.log(data);
-      if(!data.scenes || !data.scenes.length)
-        return console.log('oh, no scenes found!');
       $scope.scenes = data.scenes || [];
 
       $http.get('/device/find').
@@ -51,21 +49,6 @@ app.controller('SceneController', function($scope, $http, socket){
 
       }).error(function(data, status, headers, config) {});
     }).error(function(data, status, headers, config) {});
-  };
-
-  $scope.loadDevices = function() {
-    console.log("devices",$scope.devices);
-    if($scope.devices && $scope.devices.length > 0) return;
-    $http.get('/device/find').
-    success(function(data, status, headers, config) {
-      console.log(data);
-      if(!data.devices) return console.log('oh, no devices found!');
-      var devices = data.devices || [];
-      $scope.devices = adjustDevices(devices);
-    }).
-    error(function(data, status, headers, config) {
-    });
-
   };
 
   $scope.addScene = function(scene) {
