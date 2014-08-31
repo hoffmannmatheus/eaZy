@@ -21,8 +21,11 @@ class ZWaveController():
         dispatcher.connect(self.onNetworkFailed, ZWaveNetwork.SIGNAL_NETWORK_FAILED)
 
         # TODO: make udev.symlink rule to a specific port (USB0/1)
-        options = ZWaveOption("/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0", \
-          config_path="/home/matheus/software/python-openzwave-0.2.6/openzwave/config", \
+        # Uncomment this to run on PC (remember to update the zwave config path)
+        #options = ZWaveOption("/dev/ttyUSB0", \
+        #  config_path="/home/<USER>/software/python-openzwave-0.2.6/openzwave/config", \
+        options = ZWaveOption("/dev/serial/by-path/platform-bcm2708_usb-usb-0:1.2:1.0-port0", \
+          config_path="/home/pi/software/python-openzwave-0.2.6/openzwave/config", \
           user_path=".", cmd_line="")
         options.set_append_log_file(False)
         options.set_console_output(False)
@@ -30,7 +33,7 @@ class ZWaveController():
         options.set_poll_interval(30);
         options.set_suppress_value_refresh(False)
         options.addOptionBool("AssumeAwake", True)
-        options.set_logging(True)
+        options.set_logging(False)
         options.lock()
         self.network = ZWaveNetwork(options, autostart=False)
         self.onDeviceUpdateCallback = updateCallback
@@ -56,8 +59,10 @@ class ZWaveController():
         dev['product_name'] = self.network.nodes[node].product_name
         if self.getValueForLabel(node, 'Switch'):
             dev['type'] = 'appliance'
-            dev['consumption_accumulated'] = self.getValueForLabel(node, 'Energy')
-            dev['consumption_current'] = self.getValueForLabel(node, 'Power')
+            val = self.getValueForLabel(node, 'Energy')
+            dev['consumption_accumulated'] = type(val) != "None" and val or 0
+            val = self.getValueForLabel(node, 'Power')
+            dev['consumption_current'] =  type(val) != "None" and val or 0
             if self.getValueForLabel(node, 'Switch') == 'True':
                 dev['state'] = 'on'
             else:
