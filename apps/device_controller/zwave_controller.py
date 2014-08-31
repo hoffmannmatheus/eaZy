@@ -20,7 +20,8 @@ class ZWaveController():
         dispatcher.connect(self.onNetworkStart, ZWaveNetwork.SIGNAL_NETWORK_STARTED)
         dispatcher.connect(self.onNetworkFailed, ZWaveNetwork.SIGNAL_NETWORK_FAILED)
 
-        options = ZWaveOption("/dev/ttyUSB0", \
+        # TODO: make udev.symlink rule to a specific port (USB0/1)
+        options = ZWaveOption("/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0", \
           config_path="/home/matheus/software/python-openzwave-0.2.6/openzwave/config", \
           user_path=".", cmd_line="")
         options.set_append_log_file(False)

@@ -73,7 +73,8 @@ app.controller('SceneController', function($scope, $http, socket){
 
   $scope.deleteScene = function(scene) {
     if(!scene) return console.log('Trying to delete null scene');
-    closeDeleteSceneModal()
+    console.log("deleting:",scene);
+    closeDeleteSceneModal();
     $http.post('/scene/delete', {scene:scene}).
     success(function(data, status, headers, config) {
       if(data.err) console.log(data.err);

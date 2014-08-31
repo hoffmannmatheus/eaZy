@@ -31,8 +31,9 @@
                 <span class="glyphicon glyphicon-plus"></span>
                {{scene.target_state}}</td>
             <td>
+                <br/>
                 <a data-toggle="modal" data-target=".deleteSceneModal" href='#' ng-click='setSceneToDelete(scene)'>
-                    Remove <span class="glyphicon glyphicon-minus-sign"></span>
+                    Delete <span class="glyphicon glyphicon-minus-sign"></span>
                 </a>
             </td>
         </tr>
@@ -103,7 +104,7 @@
                 </div>
                 <div class="modal-footer">
                     <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                    <a data-toggle="modal" data-target=".deleteSceneModal" href='#' ng-click='setSceneToDelete(scene)'>Remove <span class="glyphicon glyphicon-minus-sign"></span>
+                    <button class="btn btn-danger" ng-click="deleteScene(sceneToDelete)">Delete</button>
                 </a>
             </td>
         </tr>
