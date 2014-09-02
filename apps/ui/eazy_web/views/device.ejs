@@ -8,54 +8,63 @@
         <p>No devices found.</p>
     </a>
     <div ng-repeat="device in devices">
-        <a href='#' ng-if="device.type != 'unknown' 
+        <!-- DEVICE BOX IMAGE AND INFO -->
+        <div class='device_box' ng-if="device.type != 'unknown' 
                         && device.registration != 'unregistered'
-                        && device.registration != 'missing'" 
-                ng-click='changestate(device)' class='device_box'>
+                        && device.registration != 'missing'"
+                ng-swipe-right="openUpdateModal(device)">
             <div class='row'>
                 <div class="col-xs-5 col-md-3">
-                    <div class="icon {{device.state=='off' && 'inactive'}}">
-                        <img ng-if="device.type == 'appliance'"
-                                src='images/appliance.png'/>
-                        <img ng-if="device.type == 'light'"
-                                src='images/light.png'/>
-                        <img ng-if="device.type == 'sensor'"
-                                src='images/thermometer.png'/>
-                    </div>
+                    <a class="device_action_button" ng-click='changestate(device)' href="#">
+                        <div class="icon {{device.state=='off' && 'inactive'}}">
+                            <img ng-if="device.type == 'appliance'"
+                                    src='images/appliance.png'/>
+                            <img ng-if="device.type == 'light'"
+                                    src='images/light.png'/>
+                            <img ng-if="device.type == 'sensor'"
+                                    src='images/thermometer.png'/>
+                        </div>
+                    </a>
                 </div>
-                <div class="col-xs-7 col-md-9">
-                    <div class='row'>
-                        <!-- APPLIANCE || LIGHT-->
-                        <div ng-if="device.type=='light' || device.type=='appliance'" class='device_content'>
-                            <div class="col-xs-12 col-md-6">
-                                <p class='device_name'>{{device.name || device.product_name}}</p>
-                                <span ng-if='device.battery_level' class='battery_level'>battery: {{device.battery_level}}%</span>
+                <div class="col-xs-7 col-md-8">
+                    <a class="device_action_button" ng-click='changestate(device)' href="#">
+                        <div class='row'>
+                            <!-- APPLIANCE || LIGHT-->
+                            <div ng-if="device.type=='light' || device.type=='appliance'" class='device_content'>
+                                <div class="col-xs-12 col-md-6">
+                                    <p class='device_name'>{{device.name || device.product_name}}</p>
+                                    <span ng-if='device.battery_level' class='battery_level'>battery: {{device.battery_level}}%</span>
+                                </div>
+                                <div class="col-xs-4 col-md-2">
+                                    <p class='device_state'>{{device.state}}</p>
+                                </div>
+                                <div class="col-xs-8 col-md-4">
+                                    <p class='device_info'>{{device.consumption_current}}w</p>
+                                </div>
                             </div>
-                            <div class="col-xs-4 col-md-2">
-                                <p class='device_state'>{{device.state}}</p>
-                            </div>
-                            <div class="col-xs-8 col-md-4">
-                                <p class='device_info'>{{device.consumption_current}}w</p>
+                            <!-- MULTISENSOR -->
+                            <div ng-if="device.type == 'sensor'" class='device_content'>
+                                <div class="col-xs-12 col-md-6">
+                                    <p class='device_name'>{{device.name || device.product_name}}</p>
+                                    <span ng-if='device.battery_level' class='battery_level'>battery: {{device.battery_level}}%</span>
+                                </div>
+                                <div class="col-xs-6 col-md-3">
+                                    <p class='device_info'>{{device.temperature || 0}}°C</p>
+                                </div>
+                                <div class="col-xs-6 col-md-3">
+                                    <p class='device_info'>{{device.luminance || 0}} lm</p>
+                                </div>
                             </div>
                         </div>
-                        <!-- THERMOMETER -->
-                        <div ng-if="device.type == 'sensor'" class='device_content'>
-                            <div class="col-xs-12 col-md-6">
-                                <p class='device_name'>{{device.name || device.product_name}}</p>
-                                <span ng-if='device.battery_level' class='battery_level'>battery: {{device.battery_level}}%</span>
-                            </div>
-                            <div class="col-xs-6 col-md-3">
-                                <p class='device_info'>{{device.temperature || 0}}°C</p>
-                            </div>
-                            <div class="col-xs-6 col-md-3">
-                                <p class='device_info'>{{device.luminance || 0}} lm</p>
-                            </div>
-                        </div>
-                    </div>
+                    </a>
+                </div>
+                <div class="update_device col-xs-0 col-md-1 hidden-xs">
+                    <a id="update_button" ng-click='setDeviceToUpdate(device)' data-toggle="modal" data-target=".updateDeviceModal" href="#"><span class="glyphicon glyphicon-cog"></span></a>
                 </div>
             </div>
-        </a>
-
+            <!-- END DEVICE BOX IMAGE AND INFO -->
+        </div>
+        <!-- CASE DEVICE IS MISSING -->
         <div class='device_irregular' ng-if="device.registration == 'missing'" >
             <h3>Missing device</h3> 
             <table class="table">
@@ -68,6 +77,7 @@
                 </tr>
             </table>
         </div>
+        <!-- CASE DEVICE IS UNREGISTERED -->
         <div class='device_irregular' ng-if="device.registration == 'unregistered'">
             <h3>Unknown device</h3>
             <table class="table">
@@ -80,11 +90,16 @@
                 </tr>
             </table>
         </div>
+        <!-- CASE DEVICE IS NOT SUPPORTED -->
         <div class='device_irregular' ng-if="device.type == 'unknown'">
             <h3>sorry, but currently eaZy does not know about</h3>
             <table class="table">
                 <tr>
                     <td>{{device.product_name}}</td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Data: {{device}}</td>
                     </td>
                 </tr>
             </table>
@@ -124,7 +139,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
+                        <button data-dismiss="modal" class="btn btn-default" type="button" ng-click="cancelUpdate()">Cancel</button>
                         <button class="btn btn-primary" type="submit">Update</button>
                     </div>
                 </form>

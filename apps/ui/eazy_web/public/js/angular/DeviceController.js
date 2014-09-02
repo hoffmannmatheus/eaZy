@@ -73,8 +73,17 @@ app.controller('DeviceController', function($scope, $http, socket){
     });
   };
 
+  $scope.openUpdateModal = function(device) {
+    // TODO make deep copy
+    $scope.deviceToUpdate = {};
+    for(var prop in device) { $scope.deviceToUpdate[prop] = device[prop];}
+    angular.element('#update_button').click();
+  };
+
   $scope.setDeviceToUpdate = function(device) {
-    $scope.deviceToUpdate = device;
+    // TODO make deep copy
+    $scope.deviceToUpdate = {};
+    for(var prop in device) { $scope.deviceToUpdate[prop] = device[prop];}
   };
 
   $scope.updateDevice = function(device) {
