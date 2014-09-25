@@ -8,6 +8,12 @@ configuration by using ZWave devices and a simple Web interface.
 # Installation
 todo
 
+# What You Need
+todo
+
+# Usage
+todo
+
 # Dependencies
 eaZy uses mainly the following technologies:
 
@@ -17,9 +23,6 @@ eaZy uses mainly the following technologies:
 + Open ZWave
 + Plus: lzmq (lua ZeroMQ bindings), node-zmq (node.js ZeroMQ bindings), Socket.IO
 (web client-server communication), ...
-
-# Usage
-todo
 
 # License
 The MIT License (MIT)
