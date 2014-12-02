@@ -7,11 +7,12 @@ configuration by using ZWave devices and a simple Web interface.
 
 ## Features
 Control of ZWave devices by using a simple web interface.
-![s](docs/images/screens/dashboard_m.png)
-![s](docs/images/screens/dashboard_m_2.png)
-![s](docs/images/screens/devices.png)
-![s](docs/images/screens/energy.png)
-![s](docs/images/screens/scenes_add.png)
+<br>
+<img width="45%" src="docs/images/screens/dashboard_m.png" />
+<img width="45%" style="float:right" src="docs/images/screens/dashboard_m_2.png" />
+![eaZy Devices page](docs/images/screens/devices.png)
+![eaZy Enery page](docs/images/screens/energy.png)
+![eaZy Add Scene form](docs/images/screens/scenes_add.png)
 
 
 ## What you will need
