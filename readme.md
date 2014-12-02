@@ -3,28 +3,28 @@
 <b>eaZy</b> is a Home Automation project that proposes easyness on installation and
 configuration by using ZWave devices and a simple Web interface.
 
-<b>Note</b>: eaZy is currently under development.
+<b>Note</b>: eaZy is an early stage project.
 
-# Installation
-todo
+## Features
+Control of ZWave devices by using a simple web interface.
+![s](docs/images/screens/dashboard_m.png)
+![s](docs/images/screens/dashboard_m_2.png)
+![s](docs/images/screens/devices.png)
+![s](docs/images/screens/energy.png)
+![s](docs/images/screens/scenes_add.png)
 
-# What You Need
-todo
 
-# Usage
-todo
+## What you will need
+- <b>ZWave Devices</b>: The system communicates with ZWave devices by using a ZWave USB Controller (such as the ZStick 2).
+- <b>Host</b>: Any hardware supporting a debian-like linux distribution may work, though only a Desktop and Raspberry Pi have been tested until now. It is recommended Ubuntu or Raspbian, which used during development.
+- <b>Software</b>: Currently, there is no automatic installer. Though, the installation is not a big issue: just follow the `scripts/install_dependencies.sh` file.
+- <b>Connection</b>: The host needs to be connected to the local network so it can be accessed. Example: `http://raspberrpi.local:3000` or `http://<host-ip>:3000`.
 
-# Dependencies
-eaZy uses mainly the following technologies:
 
-+ Lua v5.1
-+ ZeroMQ v3.4
-+ Node.js \+ Express
-+ Open ZWave
-+ Plus: lzmq (lua ZeroMQ bindings), node-zmq (node.js ZeroMQ bindings), Socket.IO
-(web client-server communication), ...
+## Support
+If you have any problems or questions, feel free to open a new issue, or email me at hoffmann.matheus <at> gmail.
 
-# License
+## License
 The MIT License (MIT)
 
 Copyright (c) 2014 Matheus Hoffmann Silva.
